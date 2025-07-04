@@ -10,12 +10,12 @@ export interface AuthState {
   role: string;
 }
 
-export interface ApiResponse<T> {
-  statusCode: number;
-  data: T;
-  message: string;
-  success: boolean;
-}
+// export interface ApiResponse<T> {
+//   statusCode: number;
+//   data: T;
+//   message: string;
+//   success: boolean;
+// }
 
 export interface LoginRegisterRequest {
   email: string;
