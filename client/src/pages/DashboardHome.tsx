@@ -5,12 +5,12 @@ function DashboardHome() {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
-      <aside className="w-[250px] bg-white border-r shadow-md">
+      <aside className="w-[250px] bg-white border-r shadow-md hidden md:block">
         <Sidebar />
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 p-6 bg-gray-50">
+      <main className="flex-1 pl-1 bg-gray-50">
         <Outlet />
       </main>
     </div>

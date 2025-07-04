@@ -4,14 +4,14 @@ import { useAppSelector } from "@/redux/app/reduxHook";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
-import { useGetUserProjectsQuery } from "@/redux/features/api/projectApi";
+import { useGetProjectsQuery } from "@/redux/features/api/projectApi";
 import { useGetUserTasksQuery } from "@/redux/features/api/taskApi";
 
 const Dashboard = () => {
   const { user } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
 
-  const { data: projectData, isLoading: loadingProjects } = useGetUserProjectsQuery();
+  const { data: projectData, isLoading: loadingProjects } = useGetProjectsQuery();
   const { data: taskData, isLoading: loadingTasks } = useGetUserTasksQuery({ status: "in-progress" }); // optional filter
 
   useEffect(() => {

@@ -7,3 +7,8 @@ export interface Project {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface createProject {
+  title: string;
+  description: string;
+}

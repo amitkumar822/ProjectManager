@@ -1,6 +1,7 @@
 
 import App from "@/App";
-import CreateTask from "@/components/createTask";
+import CreateProject from "@/components/CreateProject";
+import CreateTask from "@/components/CreateTask";
 import { AuthPage } from "@/pages/AuthPage";
 import Dashboard from "@/pages/Dashboard";
 import DashboardHome from "@/pages/DashboardHome";
@@ -20,7 +21,8 @@ const router = createBrowserRouter(
         <Route path="/dashboard" element={<DashboardHome />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/project/create" element={<CreateTask />} />
+          <Route path="/dashboard/project/create" element={<CreateProject />} />
+          <Route path="/dashboard/task/create" element={<CreateTask />} />
 
         </Route>
       </Route>

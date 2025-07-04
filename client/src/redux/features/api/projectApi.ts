@@ -1,17 +1,29 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { customBaseQuery } from "@/redux/utils/customBaseQuery";
 import type { ApiResponse } from "@/types/apiResErrorType";
-import type { Project } from "@/types/projectTypes";
+import type { createProject, Project } from "@/types/projectTypes";
 
 export const projectApi = createApi({
   reducerPath: "projectApi",
+  tagTypes: ["Refreshing_Project"],
   baseQuery: customBaseQuery("project"),
   endpoints: (builder) => ({
-    getUserProjects: builder.query<ApiResponse<Project[]>, void>({
-      query: () => "/get-user-project",
+    createProject: builder.mutation<void, createProject>({
+      query: (formData) => ({
+        url: "/create-project",
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["Refreshing_Project"],
     }),
-    // Add: createProject, updateProject, deleteProject
+    getProjects: builder.query<ApiResponse<Project[]>, void>({
+      query: () => ({
+        url: "/get-user-project",
+        method: "GET",
+      }),
+      providesTags: ["Refreshing_Project"],
+    }),
   }),
 });
 
-export const { useGetUserProjectsQuery } = projectApi;
+export const { useCreateProjectMutation, useGetProjectsQuery } = projectApi;
