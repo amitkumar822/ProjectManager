@@ -13,12 +13,12 @@ const Sidebar = () => {
       icon: <LayoutDashboard size={20} />,
     },
     {
-      to: "/project/create",
+      to: "/dashboard/project/create",
       label: "Create Project",
       icon: <Folder size={20} />,
     },
     {
-      to: "/task/create",
+      to: "/dashboard/task/create",
       label: "Create Task",
       icon: <ListTodo size={20} />,
     },

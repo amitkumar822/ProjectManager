@@ -19,7 +19,7 @@ export const taskApi = createApi({
     // Get Tasks by user (optionally filtered by status)
     getUserTasks: builder.query<{ data: Task[] }, { status?: string }>({
       query: ({ status }) => ({
-        url: `/get-user-task${status ? `?status=${status}` : ""}`,
+        url: `/get-task${status ? `?status=${status}` : ""}`,
         method: "GET",
       }),
       providesTags: ["Task"],
