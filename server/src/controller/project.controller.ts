@@ -35,29 +35,33 @@ export const createProject = asyncHandler(
 
 /**
  * @desc  Get All User Project
- * @route "GET" /get-user-project
+ * @route "GET" /get-user-project?status=query
  * @access Private
  */
 export const getUserProjects = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
     const userId = req.user?.userId;
+    const { status } = req.query;
 
-    const projects = await Project.find({ user: userId })
+    // Build dynamic filter object
+    const filter: Record<string, any> = { user: userId };
+
+    if (status) {
+      filter.status = status;
+    }
+
+    const projects = await Project.find(filter)
       .populate("user", "email")
-      .sort({
-        createdAt: -1,
-      })
+      .sort({ createdAt: -1 })
       .lean();
 
     if (!projects || projects.length === 0) {
-      throw new ApiError(404, "Project Not Found");
+      throw new ApiError(404, "No Projects Found");
     }
 
     res
       .status(200)
-      .json(
-        new ApiResponse(200, projects, "Get User All Project successfully")
-      );
+      .json(new ApiResponse(200, projects, "Fetched projects successfully"));
   }
 );
 

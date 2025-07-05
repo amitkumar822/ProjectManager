@@ -1,7 +1,11 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { customBaseQuery } from "@/redux/utils/customBaseQuery";
 import type { ApiResponse } from "@/types/apiResErrorType";
-import type { createProject, DeleteResponse, Project } from "@/types/projectTypes";
+import type {
+  createProject,
+  DeleteResponse,
+  Project,
+} from "@/types/projectTypes";
 
 export const projectApi = createApi({
   reducerPath: "projectApi",
@@ -16,9 +20,9 @@ export const projectApi = createApi({
       }),
       invalidatesTags: ["Refreshing_Project"],
     }),
-    getProjects: builder.query<ApiResponse<Project[]>, void>({
-      query: () => ({
-        url: "/get-user-project",
+    getProjects: builder.query<ApiResponse<Project[]>, { status?: string }>({
+      query: ({ status }) => ({
+        url: `/get-user-project${status ? `?status=${status}` : ""}`,
         method: "GET",
       }),
       providesTags: ["Refreshing_Project"],
