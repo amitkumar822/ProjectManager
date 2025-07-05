@@ -51,7 +51,7 @@ export const createTask = asyncHandler(
 
 /**
  * @desc  Get User Task
- * @route "GET" /get-task?status=query
+ * @route "GET" /get-task?status=query&page1=&limit=10
  * @access Private
  */
 export const getUserTasks = asyncHandler(
@@ -60,17 +60,41 @@ export const getUserTasks = asyncHandler(
 
     const { status } = req.query;
 
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
     const filter: FilterQuery<ITask> = { user: userId };
     if (status) {
       filter.status = status || "";
     }
 
-    const tasks = await Task.find(filter).sort({ dueDate: 1 }).lean();
+    // Get total count for pagination
+    const totalResults = await Task.countDocuments(filter);
+    const totalPages = Math.ceil(totalResults / limit);
+
+    const tasks = await Task.find(filter)
+      .sort({ dueDate: 1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
     if (!tasks || tasks.length === 0) {
       throw new ApiError(404, "Task Not Found");
     }
 
-    res.status(200).json(new ApiResponse(200, tasks, "Get task successfully"));
+    res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          results: tasks,
+          currentPage: page,
+          totalPages,
+          totalResults,
+        },
+        "Get task successfully"
+      )
+    );
   }
 );
 

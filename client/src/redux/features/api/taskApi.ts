@@ -1,6 +1,12 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { customBaseQuery } from "@/redux/utils/customBaseQuery";
-import type { Task, TaskPayload, UpdateTaskPayload } from "@/types/taskType";
+import type {
+  PaginatedTaskResponse,
+  Task,
+  TaskPayload,
+  UpdateTaskPayload,
+} from "@/types/taskType";
+import type { ApiResponse } from "@/types/apiResErrorType";
 
 export const taskApi = createApi({
   reducerPath: "taskApi",
@@ -19,11 +25,29 @@ export const taskApi = createApi({
       invalidatesTags: ["Task"],
     }),
 
-    getUserTasks: builder.query<{ data: Task[] }, { status?: string }>({
-      query: ({ status }) => ({
-        url: `/get-task${status ? `?status=${status}` : ""}`,
-        method: "GET",
-      }),
+    // getUserTasks: builder.query<{ data: Task[] }, { status?: string }>({
+    //   query: ({ status }) => ({
+    //     url: `/get-task${status ? `?status=${status}` : ""}`,
+    //     method: "GET",
+    //   }),
+    //   providesTags: ["Task"],
+    // }),
+
+    getUserTasks: builder.query<
+      ApiResponse<PaginatedTaskResponse>,
+      { status?: string; page?: number; limit?: number }
+    >({
+      query: ({ status, page = 1, limit = 10 }) => {
+        const params = new URLSearchParams();
+        if (status) params.append("status", status);
+        params.append("page", String(page));
+        params.append("limit", String(limit));
+
+        return {
+          url: `/get-task?${params.toString()}`,
+          method: "GET",
+        };
+      },
       providesTags: ["Task"],
     }),
 

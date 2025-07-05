@@ -27,7 +27,7 @@ export const projectApi = createApi({
       ApiResponse<PaginatedProjectResponse>,
       { status?: string; page?: number; limit?: number }
     >({
-      query: ({ status, page = 1, limit = 6 }) => {
+      query: ({ status, page, limit }) => {
         const params = new URLSearchParams();
 
         if (status) params.append("status", status);

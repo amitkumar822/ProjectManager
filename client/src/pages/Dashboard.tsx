@@ -88,7 +88,24 @@ const Dashboard = () => {
       </div>
 
       {/* Project List */}
-      <ProductCard projectData={projectData?.data?.results} role="Project" />
+      {projectData?.data?.results.length === 0 ? (
+        <div className="flex flex-col items-center justify-center gap-4 py-20 text-center text-gray-600">
+          <h2 className="text-2xl font-semibold">No Projects Found</h2>
+          <p className="text-sm max-w-md">
+            It looks like you haven’t created any projects yet. Start your first project to manage tasks efficiently and stay organized!
+          </p>
+          <Button
+            variant="default"
+            className="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full shadow"
+            onClick={() => navigate("/dashboard/project/create")}
+          >
+            Create New Project
+          </Button>
+        </div>
+      ) : (
+        <ProductCard projectData={projectData?.data?.results} role="Project" />
+      )}
+
 
       {/* Pagination */}
       {totalPages > 1 && (

@@ -6,6 +6,14 @@ export interface Task {
   dueDate: Date;
   project: string;
   user: string;
+  totalPages?: number;
+}
+
+export interface PaginatedTaskResponse {
+  results: Task[];
+  totalPages: number;
+  currentPage: number;
+  totalResults: number;
 }
 
 export interface TaskPayload {
