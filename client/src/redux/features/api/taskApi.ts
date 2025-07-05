@@ -7,7 +7,10 @@ export const taskApi = createApi({
   tagTypes: ["Task"],
   baseQuery: customBaseQuery("task"),
   endpoints: (builder) => ({
-    createTask: builder.mutation<{ data: Task }, { projectId: string; formData: TaskPayload }>({
+    createTask: builder.mutation<
+      { data: Task },
+      { projectId: string; formData: TaskPayload }
+    >({
       query: ({ projectId, formData }) => ({
         url: `/create-task/${projectId}`,
         method: "POST",
@@ -16,7 +19,6 @@ export const taskApi = createApi({
       invalidatesTags: ["Task"],
     }),
 
-    // Get Tasks by user (optionally filtered by status)
     getUserTasks: builder.query<{ data: Task[] }, { status?: string }>({
       query: ({ status }) => ({
         url: `/get-task${status ? `?status=${status}` : ""}`,
@@ -25,8 +27,10 @@ export const taskApi = createApi({
       providesTags: ["Task"],
     }),
 
-    // Update Task
-    updateTask: builder.mutation<{ data: Task }, { taskId: string; formData: UpdateTaskPayload }>({
+    updateTask: builder.mutation<
+      { data: Task },
+      { taskId: string; formData: UpdateTaskPayload }
+    >({
       query: ({ taskId, formData }) => ({
         url: `/update-task/${taskId}`,
         method: "PUT",
@@ -35,7 +39,6 @@ export const taskApi = createApi({
       invalidatesTags: ["Task"],
     }),
 
-    // Delete Task
     deleteTask: builder.mutation<{ message: string }, string>({
       query: (taskId) => ({
         url: `/delete-task/${taskId}`,
