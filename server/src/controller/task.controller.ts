@@ -50,11 +50,11 @@ export const createTask = asyncHandler(
 );
 
 /**
- * @desc  Get User Task
- * @route "GET" /get-task?status=query&page1=&limit=10
+ * @desc  Get All User Task
+ * @route "GET" /get-all-task?status=query&page1=&limit=10
  * @access Private
  */
-export const getUserTasks = asyncHandler(
+export const getAllUserTasks = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
     const userId = req.user?.userId;
 

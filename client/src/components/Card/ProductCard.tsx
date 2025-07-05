@@ -8,7 +8,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Pencil, Trash2, PlusCircle, FileText, FolderPlus } from "lucide-react";
+import { Pencil, Trash2, PlusCircle, FileText, FolderPlus, View } from "lucide-react";
 import type { Project } from "@/types/projectTypes";
 import type { Task } from "@/types/taskType";
 import { useNavigate } from "react-router";
@@ -81,7 +81,7 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                         <FolderPlus className="w-6 h-6 text-white" />
                     )}
                     <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">
-                        Your {role}
+                        Your {role === "Task" && "All"} {role}
                     </h2>
                 </div>
 
@@ -117,27 +117,51 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                             </Badge>
 
                                             {role !== "Task" && (
-                                                <TooltipProvider>
-                                                    <Tooltip>
-                                                        <TooltipTrigger asChild>
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                className="text-purple-600 hover:bg-purple-100 cursor-pointer bg-purple-400/10"
-                                                                onClick={() =>
-                                                                    navigate(
-                                                                        `/dashboard/task/create?project_id=${project._id}`
-                                                                    )
-                                                                }
-                                                            >
-                                                                <PlusCircle className="w-5 h-5" />
-                                                            </Button>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent>
-                                                            <p>Add Task</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
-                                                </TooltipProvider>
+                                                <>
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    className="text-purple-600 hover:bg-purple-100 cursor-pointer bg-purple-400/10"
+                                                                    onClick={() =>
+                                                                        navigate(
+                                                                            `/dashboard/task/create?project_id=${project._id}`
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <PlusCircle className="w-5 h-5" />
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>Add Task</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    className="text-orange-600 hover:bg-orange-100 cursor-pointer bg-orange-400/10"
+                                                                    onClick={() =>
+                                                                        navigate(
+                                                                            `/dashboard/task/create?project_id=${project._id}`
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <View className="w-5 h-5" />
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>View All Task</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+                                                </>
                                             )}
                                             <TooltipProvider>
                                                 <Tooltip>
@@ -168,6 +192,7 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                                     </TooltipContent>
                                                 </Tooltip>
                                             </TooltipProvider>
+
                                             <TooltipProvider>
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>

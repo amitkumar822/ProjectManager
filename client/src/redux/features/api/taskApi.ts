@@ -24,15 +24,6 @@ export const taskApi = createApi({
       }),
       invalidatesTags: ["Task"],
     }),
-
-    // getUserTasks: builder.query<{ data: Task[] }, { status?: string }>({
-    //   query: ({ status }) => ({
-    //     url: `/get-task${status ? `?status=${status}` : ""}`,
-    //     method: "GET",
-    //   }),
-    //   providesTags: ["Task"],
-    // }),
-
     getUserTasks: builder.query<
       ApiResponse<PaginatedTaskResponse>,
       { status?: string; page?: number; limit?: number }
@@ -44,7 +35,7 @@ export const taskApi = createApi({
         params.append("limit", String(limit));
 
         return {
-          url: `/get-task?${params.toString()}`,
+          url: `/get-all-task?${params.toString()}`,
           method: "GET",
         };
       },
