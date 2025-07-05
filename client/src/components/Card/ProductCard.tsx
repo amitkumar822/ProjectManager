@@ -1,13 +1,17 @@
-import { useState, type FC } from 'react'
+import { useState, type FC } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Pencil, Trash2, PlusCircle, FileText, FolderPlus } from 'lucide-react';
-import type { Project } from '@/types/projectTypes';
-import type { Task } from '@/types/taskType';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Pencil, Trash2, PlusCircle, FileText, FolderPlus } from "lucide-react";
+import type { Project } from "@/types/projectTypes";
+import type { Task } from "@/types/taskType";
+import { useNavigate } from "react-router";
 
 interface ProductCardProps {
     projectData?: Project[] | Task[];
@@ -16,18 +20,16 @@ interface ProductCardProps {
 
 const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
     const navigate = useNavigate();
-    const [expandedCards, setExpandedCards] = useState<{ [key: string]: boolean }>({});
+    const [expandedCards, setExpandedCards] = useState<{
+        [key: string]: boolean;
+    }>({});
 
     const toggleCard = (id: string) => {
-        setExpandedCards(prev => ({
+        setExpandedCards((prev) => ({
             ...prev,
-            [id]: !prev[id]
+            [id]: !prev[id],
         }));
     };
-
-    const handleAddTask = (projectId: string) => {
-        alert(projectId)
-    }
 
     return (
         <>
@@ -55,25 +57,37 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                     <div className="flex items-start justify-between gap-2">
                                         <CardTitle
                                             onClick={() => toggleCard(project._id)}
-                                            className={`cursor-pointer text-lg font-bold text-gray-800 ${isExpanded ? "" : "line-clamp-1"}`}
+                                            className={`cursor-pointer text-lg font-bold text-gray-800 ${isExpanded ? "" : "line-clamp-1"
+                                                }`}
                                         >
                                             <FileText className="inline-block w-5 h-5 text-purple-600 mr-2" />
                                             {project.title}
                                         </CardTitle>
                                         <div className="flex items-center gap-2">
                                             <Badge
-                                                className={`text-white py-2 ${project.status === "completed" ? "bg-green-600" : "bg-yellow-500"}`}
+                                                className={`text-white py-1 px-3 rounded-full capitalize text-xs font-semibold
+                                                    ${project.status === "todo" && "bg-blue-500"}
+                                                    ${project.status === "in-progress" && "bg-purple-500"}
+                                                    ${project.status === "done" && "bg-green-600"}
+                                                    ${project.status === "completed" && "bg-green-700"}
+                                                    ${project.status === "active" && "bg-yellow-500"}
+                                                `}
                                             >
-                                                {project.status}
+                                                {project.status.replace(/-/g, " ")}
                                             </Badge>
+
                                             {role !== "Task" && (
                                                 <TooltipProvider>
                                                     <Tooltip>
                                                         <TooltipTrigger asChild>
-                                                            <Button variant="ghost" size="icon"
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
                                                                 className="text-purple-600 hover:bg-purple-100 cursor-pointer bg-purple-400/10"
                                                                 onClick={() =>
-                                                                    navigate(`/dashboard/task/create?project_id=${project._id}`)
+                                                                    navigate(
+                                                                        `/dashboard/task/create?project_id=${project._id}`
+                                                                    )
                                                                 }
                                                             >
                                                                 <PlusCircle className="w-5 h-5" />
@@ -88,7 +102,11 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                             <TooltipProvider>
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
-                                                        <Button variant="ghost" size="icon" className="text-blue-600 hover:bg-blue-100 cursor-pointer bg-blue-400/10">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            className="text-blue-600 hover:bg-blue-100 cursor-pointer bg-blue-400/10"
+                                                        >
                                                             <Pencil className="w-5 h-5" />
                                                         </Button>
                                                     </TooltipTrigger>
@@ -100,7 +118,11 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                             <TooltipProvider>
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
-                                                        <Button variant="ghost" size="icon" className="text-red-600 hover:bg-red-100 cursor-pointer bg-red-400/10">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            className="text-red-600 hover:bg-red-100 cursor-pointer bg-red-400/10"
+                                                        >
                                                             <Trash2 className="w-5 h-5" />
                                                         </Button>
                                                     </TooltipTrigger>
@@ -112,8 +134,14 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                         </div>
                                     </div>
                                 </CardHeader>
-                                <CardContent onClick={() => toggleCard(project._id)} className="cursor-pointer">
-                                    <p className={`text-sm text-gray-700 ${isExpanded ? "" : "line-clamp-2"}`}>
+                                <CardContent
+                                    onClick={() => toggleCard(project._id)}
+                                    className="cursor-pointer"
+                                >
+                                    <p
+                                        className={`text-sm text-gray-700 ${isExpanded ? "" : "line-clamp-2"
+                                            }`}
+                                    >
                                         {project.description}
                                     </p>
                                 </CardContent>

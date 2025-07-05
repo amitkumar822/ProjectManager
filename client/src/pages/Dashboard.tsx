@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "@/redux/app/reduxHook";
 import { Loader2 } from "lucide-react";
 import { useGetProjectsQuery } from "@/redux/features/api/projectApi";
-import { useGetUserTasksQuery } from "@/redux/features/api/taskApi";
 import ProductCard from "@/components/Card/ProductCard";
 
 const Dashboard = () => {
@@ -11,7 +10,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const { data: projectData, isLoading: loadingProjects } = useGetProjectsQuery();
-  const { data: taskData } = useGetUserTasksQuery({ status: "in-progress" }); // optional filter
 
   useEffect(() => {
     if (!user) {
@@ -37,11 +35,7 @@ const Dashboard = () => {
         role="Project"
       />
 
-      {/* Task List */}
-      <ProductCard
-        projectData={taskData?.data}
-        role="Task"
-      />
+      
     </div>
   );
 };
