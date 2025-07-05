@@ -20,8 +20,12 @@ const Dashboard = () => {
 
   // Extract initial values from URL query params (fallbacks are provided)
   const initialStatus = searchParams.get("status") || "";
-  const initialPage = parseInt(searchParams.get("page") || "10", 10);
-  const limit = parseInt(searchParams.get("limit") || "10", 10);
+
+  const rawPage = searchParams.get("page");
+  const initialPage = rawPage && !isNaN(Number(rawPage)) ? parseInt(rawPage, 10) : 1;
+
+  const rawLimit = searchParams.get("limit");
+  const limit = rawLimit && !isNaN(Number(rawLimit)) ? parseInt(rawLimit, 10) : 10;
 
   // Local state for filters and pagination
   const [statusFilter, setStatusFilter] = useState<string>(initialStatus);
@@ -55,7 +59,7 @@ const Dashboard = () => {
       page: String(page),
       limit: String(limit),
     };
-    setSearchParams(params);
+    setSearchParams(params, { replace: true });
   }, [statusFilter, page, limit]);
 
   // Safely extract total pages from API response
