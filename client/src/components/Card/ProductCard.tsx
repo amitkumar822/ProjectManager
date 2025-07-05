@@ -9,12 +9,12 @@ interface ProductCardProps {
     role: string;
 }
 
-const ProductCard: FC<ProductCardProps> = ({ projectData }) => {
+const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
 
     return (
         <div>
             <section>
-                <h2 className="text-2xl font-semibold mb-4">Your Projects</h2>
+                <h2 className="text-2xl font-semibold mb-4">Your {role}</h2>
                 <div className="grid md:grid-cols-3 gap-4">
                     {projectData?.map((project: any) => (
                         <Card key={project._id} className="bg-white shadow">

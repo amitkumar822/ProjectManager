@@ -1,7 +1,7 @@
 
 import App from "@/App";
-import CreateProject from "@/components/CreateProject";
-import CreateTask from "@/components/CreateTask";
+import CreateProject from "@/pages/CreateProject";
+import CreateTask from "@/pages/CreateTask";
 import { AuthPage } from "@/pages/AuthPage";
 import Dashboard from "@/pages/Dashboard";
 import DashboardHome from "@/pages/DashboardHome";
