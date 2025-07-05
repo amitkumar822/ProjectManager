@@ -3,7 +3,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { projectSchema, type ProjectFormData } from '@/types/projectSchema';
 import TaskProjectForm from '@/components/TaskProjectForm';
 
-
 function CreateTask() {
   const {
     register,
