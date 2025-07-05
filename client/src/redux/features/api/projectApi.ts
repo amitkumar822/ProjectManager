@@ -4,7 +4,7 @@ import type { ApiResponse } from "@/types/apiResErrorType";
 import type {
   createProject,
   DeleteResponse,
-  Project,
+  PaginatedProjectResponse,
   SearchResponse,
   UpdateProjectPayload,
 } from "@/types/projectTypes";
@@ -23,11 +23,22 @@ export const projectApi = createApi({
       invalidatesTags: ["Refreshing_Project"],
     }),
 
-    getProjects: builder.query<ApiResponse<Project[]>, { status?: string }>({
-      query: ({ status }) => ({
-        url: `/get-user-project${status ? `?status=${status}` : ""}`,
-        method: "GET",
-      }),
+    getProjects: builder.query<
+      ApiResponse<PaginatedProjectResponse>,
+      { status?: string; page?: number; limit?: number }
+    >({
+      query: ({ status, page = 1, limit = 6 }) => {
+        const params = new URLSearchParams();
+
+        if (status) params.append("status", status);
+        params.append("page", String(page));
+        params.append("limit", String(limit));
+
+        return {
+          url: `/get-user-project?${params.toString()}`,
+          method: "GET",
+        };
+      },
       providesTags: ["Refreshing_Project"],
     }),
 

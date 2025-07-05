@@ -4,6 +4,8 @@ export interface ApiResponse<T> {
   data: T;
   message: string;
   success: boolean;
+  totalPages?: number;
+  results?: any;
 }
 
 /** For error responses from ApiError */

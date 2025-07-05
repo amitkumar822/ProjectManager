@@ -1,3 +1,5 @@
+
+
 export interface Project {
   _id: string;
   title: string;
@@ -6,6 +8,7 @@ export interface Project {
   user: string;
   createdAt: string;
   updatedAt: string;
+  results: any;
 }
 
 export interface createProject {
@@ -39,6 +42,18 @@ export type SearchResponse = {
   createdAt: string;
 };
 
+export interface GetProjectsQueryArgs {
+  status?: string;
+  page: number;
+  limit: number;
+}
+
+export interface PaginatedProjectResponse {
+  results: Project[];
+  totalPages: number;
+  currentPage: number;
+  totalResults: number;
+}
 
 
 

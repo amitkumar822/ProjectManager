@@ -36,7 +36,7 @@ export const createProject = asyncHandler(
 
 /**
  * @desc  Get All User Project
- * @route "GET" /get-user-project?status=query
+ * @route "GET" /get-user-project?status=query&page1=&limit=10
  * @access Private
  */
 export const getUserProjects = asyncHandler(
@@ -44,25 +44,42 @@ export const getUserProjects = asyncHandler(
     const userId = req.user?.userId;
     const { status } = req.query;
 
-    // Build dynamic filter object
-    const filter: Record<string, any> = { user: userId };
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
 
+    const filter: Record<string, any> = { user: userId };
     if (status) {
       filter.status = status;
     }
 
+    // Get total count for pagination
+    const totalResults = await Project.countDocuments(filter);
+    const totalPages = Math.ceil(totalResults / limit);
+
     const projects = await Project.find(filter)
       .populate("user", "email")
       .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
       .lean();
 
     if (!projects || projects.length === 0) {
       throw new ApiError(404, "No Projects Found");
     }
 
-    res
-      .status(200)
-      .json(new ApiResponse(200, projects, "Fetched projects successfully"));
+    res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          results: projects,
+          currentPage: page,
+          totalPages,
+          totalResults,
+        },
+        "Fetched projects successfully"
+      )
+    );
   }
 );
 
