@@ -1,11 +1,11 @@
-// src/components/Navbar.tsx
 import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@/redux/app/reduxHook";
 import { logout } from "@/redux/features/authSlice";
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, LogIn } from "lucide-react";
+import { Menu, LogIn } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import Logout from "./auth/Logout";
 
 const Navbar = () => {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
@@ -36,15 +36,9 @@ const Navbar = () => {
           )}
 
           {isAuthenticated ? (
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={handleLogout}
-              className="flex gap-1 items-center"
-            >
-              <LogOut size={16} />
-              Logout
-            </Button>
+            <div>
+              <Logout />
+            </div>
           ) : (
             <Button
               variant="secondary"

@@ -2,6 +2,7 @@ import { customBaseQuery } from "@/redux/utils/customBaseQuery";
 import type {
   LoginRegisterRequest,
   LoginRegisterResponse,
+  LogoutResponse,
 } from "@/types/userTypes";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
@@ -27,7 +28,7 @@ export const userApi = createApi({
       }),
       invalidatesTags: ["Refreshing_User"],
     }),
-    logoutUser: builder.mutation<void, void>({
+    logoutUser: builder.mutation<LogoutResponse, void>({
       query: () => ({
         url: "/logout",
         method: "POST",

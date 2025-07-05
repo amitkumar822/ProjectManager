@@ -10,13 +10,6 @@ export interface AuthState {
   role: string;
 }
 
-// export interface ApiResponse<T> {
-//   statusCode: number;
-//   data: T;
-//   message: string;
-//   success: boolean;
-// }
-
 export interface LoginRegisterRequest {
   email: string;
   password: string;
@@ -32,4 +25,8 @@ export interface LoginRegisterResponse {
     role?: string;
     token?: string;
   };
+}
+
+export interface LogoutResponse {
+  message: string;
 }

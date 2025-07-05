@@ -1,10 +1,8 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Folder, LogOut, List, Search } from "lucide-react";
-import { useAppDispatch } from "@/redux/app/reduxHook";
-import { logout } from "@/redux/features/authSlice";
+import { LayoutDashboard, Folder, List, Search } from "lucide-react";
+import Logout from "@/pages/auth/Logout";
 
 const Sidebar = () => {
-  const dispatch = useAppDispatch();
 
   const navLinks = [
     {
@@ -40,8 +38,7 @@ const Sidebar = () => {
             key={to}
             to={to}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded-lg text-base font-medium transition-all hover:bg-white/10 ${
-                isActive ? "bg-white/20" : ""
+              `flex items-center gap-3 px-4 py-2 rounded-lg text-base font-medium transition-all hover:bg-white/10 ${isActive ? "bg-white/20" : ""
               }`
             }
           >
@@ -50,13 +47,9 @@ const Sidebar = () => {
           </NavLink>
         ))}
 
-        <button
-          onClick={() => dispatch(logout())}
-          className="flex items-center gap-3 px-4 py-2 rounded-lg text-base font-medium transition-all hover:bg-white/10 mt-auto"
-        >
-          <LogOut size={20} />
-          Logout
-        </button>
+        <div>
+          <Logout />
+        </div>
       </nav>
     </aside>
   );

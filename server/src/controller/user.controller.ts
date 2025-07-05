@@ -84,7 +84,7 @@ export const logoutUser = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
     const userId = req.user?.userId;
 
-    if (!userId) {
+    if (userId) {
       throw new ApiError(401, "Unauthorized. User ID not found.");
     }
 

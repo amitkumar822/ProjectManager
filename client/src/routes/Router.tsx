@@ -2,7 +2,7 @@
 import App from "@/App";
 import CreateProject from "@/pages/CreateProject";
 import CreateTask from "@/components/CreateTask";
-import { AuthPage } from "@/pages/AuthPage";
+import { AuthPage } from "@/pages/auth/AuthPage";
 import Dashboard from "@/pages/Dashboard";
 import DashboardHome from "@/pages/DashboardHome";
 import HomePage from "@/pages/HomePage";
