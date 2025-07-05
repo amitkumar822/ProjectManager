@@ -1,8 +1,13 @@
-import { type FC } from 'react'
+import { useState, type FC } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Pencil, Trash2, PlusCircle, FileText, FolderPlus } from 'lucide-react';
 import type { Project } from '@/types/projectTypes';
 import type { Task } from '@/types/taskType';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
 
 interface ProductCardProps {
     projectData?: Project[] | Task[];
@@ -10,34 +15,115 @@ interface ProductCardProps {
 }
 
 const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
+    const navigate = useNavigate();
+    const [expandedCards, setExpandedCards] = useState<{ [key: string]: boolean }>({});
+
+    const toggleCard = (id: string) => {
+        setExpandedCards(prev => ({
+            ...prev,
+            [id]: !prev[id]
+        }));
+    };
+
+    const handleAddTask = (projectId: string) => {
+        alert(projectId)
+    }
 
     return (
-        <div>
+        <>
             <section>
-                <h2 className="text-2xl font-semibold mb-4">Your {role}</h2>
-                <div className="grid md:grid-cols-3 gap-4">
-                    {projectData?.map((project: any) => (
-                        <Card key={project._id} className="bg-white shadow">
-                            <CardHeader>
-                                <CardTitle className="flex items-center justify-between">
-                                    {project.title}
-                                    <Badge
-                                        className={`${project.status === "completed" ? "bg-green-500" : "bg-yellow-500"
-                                            } text-white`}
-                                    >
-                                        {project.status}
-                                    </Badge>
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-sm text-muted-foreground">{project.description}</p>
-                            </CardContent>
-                        </Card>
-                    ))}
+                <div className="bg-gradient-to-r from-indigo-500 via-sky-500 to-cyan-400 rounded-xl px-6 py-4 mb-6 shadow-md border border-indigo-300 flex items-center gap-3">
+                    {role === "Task" ? (
+                        <FileText className="w-6 h-6 text-white" />
+                    ) : (
+                        <FolderPlus className="w-6 h-6 text-white" />
+                    )}
+                    <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">
+                        Your {role}
+                    </h2>
+                </div>
+
+                <div className="grid md:grid-cols-1 gap-6">
+                    {projectData?.map((project) => {
+                        const isExpanded = expandedCards[project._id] || false;
+                        return (
+                            <Card
+                                key={project._id}
+                                className="bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 shadow-xl rounded-2xl border border-purple-200"
+                            >
+                                <CardHeader>
+                                    <div className="flex items-start justify-between gap-2">
+                                        <CardTitle
+                                            onClick={() => toggleCard(project._id)}
+                                            className={`cursor-pointer text-lg font-bold text-gray-800 ${isExpanded ? "" : "line-clamp-1"}`}
+                                        >
+                                            <FileText className="inline-block w-5 h-5 text-purple-600 mr-2" />
+                                            {project.title}
+                                        </CardTitle>
+                                        <div className="flex items-center gap-2">
+                                            <Badge
+                                                className={`text-white py-2 ${project.status === "completed" ? "bg-green-600" : "bg-yellow-500"}`}
+                                            >
+                                                {project.status}
+                                            </Badge>
+                                            {role !== "Task" && (
+                                                <TooltipProvider>
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Button variant="ghost" size="icon"
+                                                                className="text-purple-600 hover:bg-purple-100 cursor-pointer bg-purple-400/10"
+                                                                onClick={() =>
+                                                                    navigate(`/dashboard/task/create?project_id=${project._id}`)
+                                                                }
+                                                            >
+                                                                <PlusCircle className="w-5 h-5" />
+                                                            </Button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>
+                                                            <p>Add Task</p>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </TooltipProvider>
+                                            )}
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Button variant="ghost" size="icon" className="text-blue-600 hover:bg-blue-100 cursor-pointer bg-blue-400/10">
+                                                            <Pencil className="w-5 h-5" />
+                                                        </Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>
+                                                        <p>Edit</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Button variant="ghost" size="icon" className="text-red-600 hover:bg-red-100 cursor-pointer bg-red-400/10">
+                                                            <Trash2 className="w-5 h-5" />
+                                                        </Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>
+                                                        <p>Delete</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
+                                        </div>
+                                    </div>
+                                </CardHeader>
+                                <CardContent onClick={() => toggleCard(project._id)} className="cursor-pointer">
+                                    <p className={`text-sm text-gray-700 ${isExpanded ? "" : "line-clamp-2"}`}>
+                                        {project.description}
+                                    </p>
+                                </CardContent>
+                            </Card>
+                        );
+                    })}
                 </div>
             </section>
-        </div>
-    )
-}
+        </>
+    );
+};
 
-export default ProductCard
+export default ProductCard;

@@ -3,7 +3,7 @@ export interface Task {
   title: string;
   description: string;
   status: "todo" | "in-progress" | "done";
-  dueDate: string;
+  dueDate: Date;
   project: string;
   user: string;
 }
@@ -11,7 +11,7 @@ export interface Task {
 export interface TaskPayload {
   title: string;
   description: string;
-  dueDate: string;
+  dueDate: Date;
 }
 
 export interface UpdateTaskPayload extends Partial<TaskPayload> {

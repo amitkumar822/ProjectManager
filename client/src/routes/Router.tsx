@@ -1,7 +1,7 @@
 
 import App from "@/App";
 import CreateProject from "@/pages/CreateProject";
-import CreateTask from "@/pages/CreateTask";
+import CreateTask from "@/components/CreateTask";
 import { AuthPage } from "@/pages/AuthPage";
 import Dashboard from "@/pages/Dashboard";
 import DashboardHome from "@/pages/DashboardHome";
@@ -11,6 +11,7 @@ import {
   createRoutesFromElements,
   Route,
 } from "react-router-dom";
+import TaskList from "@/pages/TaskList";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -23,6 +24,7 @@ const router = createBrowserRouter(
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/project/create" element={<CreateProject />} />
           <Route path="/dashboard/task/create" element={<CreateTask />} />
+          <Route path="/dashboard/task/list" element={<TaskList />} />
 
         </Route>
       </Route>

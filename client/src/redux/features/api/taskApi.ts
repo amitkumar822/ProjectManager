@@ -7,11 +7,11 @@ export const taskApi = createApi({
   tagTypes: ["Task"],
   baseQuery: customBaseQuery("task"),
   endpoints: (builder) => ({
-    createTask: builder.mutation<{ data: Task }, { projectId: string; body: TaskPayload }>({
-      query: ({ projectId, body }) => ({
+    createTask: builder.mutation<{ data: Task }, { projectId: string; formData: TaskPayload }>({
+      query: ({ projectId, formData }) => ({
         url: `/create-task/${projectId}`,
         method: "POST",
-        body,
+        body: formData,
       }),
       invalidatesTags: ["Task"],
     }),
