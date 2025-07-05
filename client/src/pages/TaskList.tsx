@@ -26,7 +26,7 @@ function TaskList() {
   });
 
   return (
-    <div className="p-4 relative h-screen bg-gradient-to-r from-indigo-200 via-sky-200 to-cyan-300">
+    <div className="p-4 relative h-full bg-gradient-to-r from-indigo-200 via-sky-200 to-cyan-300">
       {/* Filter Bar */}
       <div className="sticky top-15 z-10 bg-gradient-to-r from-indigo-400 via-sky-400 to-cyan-300 rounded-xl p-3 shadow-lg mb-6 flex gap-2 overflow-x-auto">
         {statusOptions.map((option) => {

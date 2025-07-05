@@ -1,4 +1,4 @@
-import { useState, type FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,10 @@ import { Pencil, Trash2, PlusCircle, FileText, FolderPlus } from "lucide-react";
 import type { Project } from "@/types/projectTypes";
 import type { Task } from "@/types/taskType";
 import { useNavigate } from "react-router";
+import { useDeleteTaskMutation } from "@/redux/features/api/taskApi";
+import { toast } from "react-toastify";
+import { extractErrorMessage } from "@/utils/apiError";
+import { useDeleteProjectMutation } from "@/redux/features/api/projectApi";
 
 interface ProductCardProps {
     projectData?: Project[] | Task[];
@@ -30,6 +34,42 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
             [id]: !prev[id],
         }));
     };
+
+    const [deleteTask, taskRes] = useDeleteTaskMutation();
+
+    const [deleteProject, projectRes] = useDeleteProjectMutation()
+
+    const handleDelete = async (id: string) => {
+        const confirm = window.confirm(
+            `⚠️ Are you sure you want to permanently delete this ${role.toLowerCase()}?\nThis action cannot be undone.`
+        );
+        if (confirm) {
+            if (role === "Task") {
+                await deleteTask(id);
+            } else if (role === "Project") {
+                await deleteProject(id)
+            }
+        }
+    };
+
+    // task effect
+    useEffect(() => {
+        if (taskRes.isSuccess) {
+            toast.success("Task delete successful");
+        } else if (taskRes.error) {
+            toast.error(extractErrorMessage(taskRes.error) || "Faield to delete task");
+        }
+    }, [taskRes.isSuccess, taskRes.error]);
+
+    // project effect
+    useEffect(() => {
+        if (projectRes.isSuccess) {
+            toast.success("Task delete successful");
+        } else if (projectRes.error) {
+            toast.error(extractErrorMessage(projectRes.error) || "Faield to delete task");
+        }
+    }, [projectRes.isSuccess, projectRes.error]);
+
 
     return (
         <>
@@ -122,6 +162,7 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                                             variant="ghost"
                                                             size="icon"
                                                             className="text-red-600 hover:bg-red-100 cursor-pointer bg-red-400/10"
+                                                            onClick={() => handleDelete(project._id)}
                                                         >
                                                             <Trash2 className="w-5 h-5" />
                                                         </Button>

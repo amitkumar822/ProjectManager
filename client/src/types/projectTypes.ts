@@ -12,3 +12,10 @@ export interface createProject {
   title: string;
   description: string;
 }
+
+export interface DeleteResponse {
+  statusCode: number;
+  message: string;
+  success: boolean;
+}
+

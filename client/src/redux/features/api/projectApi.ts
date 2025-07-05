@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { customBaseQuery } from "@/redux/utils/customBaseQuery";
 import type { ApiResponse } from "@/types/apiResErrorType";
-import type { createProject, Project } from "@/types/projectTypes";
+import type { createProject, DeleteResponse, Project } from "@/types/projectTypes";
 
 export const projectApi = createApi({
   reducerPath: "projectApi",
@@ -23,7 +23,19 @@ export const projectApi = createApi({
       }),
       providesTags: ["Refreshing_Project"],
     }),
+
+    deleteProject: builder.mutation<DeleteResponse, string>({
+      query: (projectId) => ({
+        url: `/delete-project/${projectId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Refreshing_Project"],
+    }),
   }),
 });
 
-export const { useCreateProjectMutation, useGetProjectsQuery } = projectApi;
+export const {
+  useCreateProjectMutation,
+  useGetProjectsQuery,
+  useDeleteProjectMutation,
+} = projectApi;
