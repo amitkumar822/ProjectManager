@@ -6,13 +6,18 @@ import { useCreateProjectMutation } from '@/redux/features/api/projectApi';
 import { toast } from 'react-toastify';
 import { extractErrorMessage } from '@/utils/apiError';
 import TaskProjectForm from '@/components/TaskProjectForm';
+import { useLocation } from 'react-router';
 
 const CreateProject: React.FC = () => {
+    const location = useLocation();
+    const editProject = location?.state?.editProject;
+
     const {
         register,
         handleSubmit,
         formState: { errors },
         reset,
+        setValue,
     } = useForm<ProjectFormData>({
         resolver: zodResolver(projectSchema),
     });
@@ -32,6 +37,14 @@ const CreateProject: React.FC = () => {
         }
     }, [projectData.isSuccess, projectData.data, projectData.error]);
 
+    // ✅ Pre-fill form when editing
+    useEffect(() => {
+        if (editProject) {
+            setValue("title", editProject.title);
+            setValue("description", editProject.description);
+            setValue("status", editProject.status);
+        }
+    }, [editProject, setValue]);
 
 
     return (
@@ -42,7 +55,9 @@ const CreateProject: React.FC = () => {
                 onSubmit={onSubmit}
                 errors={errors}
                 role="project"
+                isEdit={!!editProject}
             />
+
 
         </>
     );

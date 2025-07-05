@@ -146,6 +146,19 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                                             variant="ghost"
                                                             size="icon"
                                                             className="text-blue-600 hover:bg-blue-100 cursor-pointer bg-blue-400/10"
+
+                                                            onClick={() =>
+                                                                role === "Task" ? navigate(
+                                                                    `/dashboard/task/create?project_id=${project._id}`, {
+                                                                    state: { editTask: project }
+                                                                }
+                                                                ) :
+                                                                    navigate(
+                                                                        `/dashboard/project/create?project_id=${project._id}`, {
+                                                                        state: { editProject: project }
+                                                                    }
+                                                                    )
+                                                            }
                                                         >
                                                             <Pencil className="w-5 h-5" />
                                                         </Button>
