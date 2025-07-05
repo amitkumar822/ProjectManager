@@ -1,6 +1,5 @@
 import { NavLink } from "react-router-dom";
 import { LayoutDashboard, Folder, List, Search } from "lucide-react";
-import Logout from "@/pages/auth/Logout";
 
 const Sidebar = () => {
 
@@ -46,10 +45,6 @@ const Sidebar = () => {
             {label}
           </NavLink>
         ))}
-
-        <div>
-          <Logout />
-        </div>
       </nav>
     </aside>
   );
