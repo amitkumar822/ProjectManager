@@ -176,7 +176,7 @@ export const searchTaskProject = asyncHandler(
       throw new ApiError(404, "No matching task or project found");
     }
 
-    // Optional: sort merged results by createdAt
+    // sort merged results by createdAt
     combined.sort(
       (a, b) =>
         new Date((a as any).createdAt).getTime() -

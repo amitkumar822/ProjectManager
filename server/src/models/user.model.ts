@@ -28,12 +28,12 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ["user", "admin"],
-      default: 'user'
+      enum: ["user"],
+      default: "user",
     },
     refreshToken: {
       type: String,
-    }
+    },
   },
   {
     timestamps: true,
