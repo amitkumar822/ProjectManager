@@ -1,7 +1,7 @@
 import React from "react";
 import type { UseFormRegister, FieldErrors, SubmitHandler, UseFormReturn } from "react-hook-form";
 import type { ProjectFormData } from "@/types/projectSchema";
-import { FolderPlus, AlignLeft, CalendarIcon, ListChecks } from "lucide-react";
+import { FolderPlus, AlignLeft, CalendarIcon, ListChecks, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,6 +20,7 @@ interface TaskProjectFormProps {
   setValue?: UseFormReturn<ProjectFormData>["setValue"];
   watch?: UseFormReturn<ProjectFormData>["watch"];
   isEdit?: boolean;
+  isLoading?: boolean;
 }
 
 const taskStatusOptions = ["todo", "in-progress", "done"];
@@ -33,7 +34,8 @@ const TaskProjectForm: React.FC<TaskProjectFormProps> = ({
   role,
   setValue,
   watch,
-  isEdit
+  isEdit,
+  isLoading
 }) => {
   const dueDate = role === "task" && watch ? watch("dueDate") : undefined;
 
@@ -142,14 +144,21 @@ const TaskProjectForm: React.FC<TaskProjectFormProps> = ({
             )}
 
 
-            {/* Submit */}
             <Button
+              disabled={isLoading}
               type="submit"
-              className="w-full cursor-pointer bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white font-bold shadow-md hover:opacity-90 transition rounded-xl"
+              className="w-full flex items-center justify-center gap-2 cursor-pointer bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white font-bold shadow-md hover:opacity-90 transition rounded-xl"
             >
-              {isEdit
-                ? `Update ${role === "task" ? "Task" : "Project"}`
-                : `Create ${role === "task" ? "Task" : "Project"}`}
+              {isLoading ? (
+                <>
+                  <Loader2 className="animate-spin w-4 h-4" />
+                  Please wait...
+                </>
+              ) : (
+                isEdit
+                  ? `Update ${role === "task" ? "Task" : "Project"}`
+                  : `Create ${role === "task" ? "Task" : "Project"}`
+              )}
             </Button>
           </form>
         </CardContent>

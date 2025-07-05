@@ -26,11 +26,11 @@ export const taskApi = createApi({
     }),
 
     // Update Task
-    updateTask: builder.mutation<{ data: Task }, { taskId: string; body: UpdateTaskPayload }>({
-      query: ({ taskId, body }) => ({
+    updateTask: builder.mutation<{ data: Task }, { taskId: string; formData: UpdateTaskPayload }>({
+      query: ({ taskId, formData }) => ({
         url: `/update-task/${taskId}`,
         method: "PUT",
-        body,
+        body: formData,
       }),
       invalidatesTags: ["Task"],
     }),

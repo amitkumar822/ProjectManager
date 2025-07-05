@@ -19,3 +19,16 @@ export interface DeleteResponse {
   success: boolean;
 }
 
+export interface updateProject {
+  title: string;
+  description: string;
+  status: "active" | "completed";
+}
+
+export interface UpdateProjectPayload {
+  projectId: string;
+  formData: createProject;
+}
+
+
+

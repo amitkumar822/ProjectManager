@@ -5,6 +5,7 @@ import type {
   createProject,
   DeleteResponse,
   Project,
+  UpdateProjectPayload,
 } from "@/types/projectTypes";
 
 export const projectApi = createApi({
@@ -20,6 +21,7 @@ export const projectApi = createApi({
       }),
       invalidatesTags: ["Refreshing_Project"],
     }),
+
     getProjects: builder.query<ApiResponse<Project[]>, { status?: string }>({
       query: ({ status }) => ({
         url: `/get-user-project${status ? `?status=${status}` : ""}`,
@@ -35,6 +37,15 @@ export const projectApi = createApi({
       }),
       invalidatesTags: ["Refreshing_Project"],
     }),
+
+    updateProject: builder.mutation<void, UpdateProjectPayload>({
+      query: ({ projectId, formData }) => ({
+        url: `/update-project/${projectId}`,
+        method: "PUT",
+        body: formData,
+      }),
+      invalidatesTags: ["Refreshing_Project"],
+    }),
   }),
 });
 
@@ -42,4 +53,5 @@ export const {
   useCreateProjectMutation,
   useGetProjectsQuery,
   useDeleteProjectMutation,
+  useUpdateProjectMutation,
 } = projectApi;

@@ -2,13 +2,14 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { projectSchema, type ProjectFormData } from '@/types/projectSchema';
-import { useCreateProjectMutation } from '@/redux/features/api/projectApi';
+import { useCreateProjectMutation, useUpdateProjectMutation } from '@/redux/features/api/projectApi';
 import { toast } from 'react-toastify';
 import { extractErrorMessage } from '@/utils/apiError';
 import TaskProjectForm from '@/components/TaskProjectForm';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 const CreateProject: React.FC = () => {
+    const navigate = useNavigate();
     const location = useLocation();
     const editProject = location?.state?.editProject;
 
@@ -22,20 +23,33 @@ const CreateProject: React.FC = () => {
         resolver: zodResolver(projectSchema),
     });
 
-    const [createProject, projectData] = useCreateProjectMutation()
+    const [createProject, projectRes] = useCreateProjectMutation()
+    const [updateProject, updateRes] = useUpdateProjectMutation()
 
     const onSubmit = async (formData: ProjectFormData) => {
-        await createProject(formData)
+        if (!!editProject) {
+            if (!editProject._id) return toast.warn("Your edit task id is missing");
+
+            await updateProject({ projectId: editProject._id, formData })
+        } else {
+            await createProject(formData)
+        }
     };
 
     useEffect(() => {
-        if (projectData.isSuccess) {
+        if (projectRes.isSuccess) {
             toast.success("Project created successful");
             reset()
-        } else if (projectData.error) {
-            toast.error(extractErrorMessage(projectData.error) || "Faield to create project");
+        } else if (projectRes.error) {
+            toast.error(extractErrorMessage(projectRes.error) || "Faield to create project");
+        } else if (updateRes.isSuccess) {
+            toast.success("Project update successfully");
+            navigate("/dashboard")
+            reset();
+        } else if (updateRes.error) {
+            toast.error(extractErrorMessage(updateRes.error) || "Failed to update project");
         }
-    }, [projectData.isSuccess, projectData.data, projectData.error]);
+    }, [projectRes.isSuccess, projectRes.error, updateRes.isSuccess, updateRes.error]);
 
     // ✅ Pre-fill form when editing
     useEffect(() => {
@@ -56,6 +70,7 @@ const CreateProject: React.FC = () => {
                 errors={errors}
                 role="project"
                 isEdit={!!editProject}
+                isLoading={projectRes.isLoading || updateRes.isLoading}
             />
 
 
