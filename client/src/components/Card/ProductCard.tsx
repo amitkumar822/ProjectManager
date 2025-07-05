@@ -149,7 +149,7 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                                                     className="text-orange-600 hover:bg-orange-100 cursor-pointer bg-orange-400/10"
                                                                     onClick={() =>
                                                                         navigate(
-                                                                            `/dashboard/task/create?project_id=${project._id}`
+                                                                            `/dashboard/task/list?project_id=${project._id}`
                                                                         )
                                                                     }
                                                                 >

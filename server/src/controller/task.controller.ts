@@ -98,6 +98,50 @@ export const getAllUserTasks = asyncHandler(
   }
 );
 
+export const getTasksByProjectId = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    const { projectId } = req.params;
+
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
+    const { status } = req.query;
+
+    const filter: FilterQuery<ITask> = { project: projectId };
+    if (status) {
+      filter.status = status;
+    }
+
+    const totalResults = await Task.countDocuments(filter);
+    const totalPages = Math.ceil(totalResults / limit);
+
+    const tasks = await Task.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    if (!tasks || tasks.length === 0) {
+      throw new ApiError(404, "No tasks found for this project");
+    }
+
+    // Return empty list if no tasks on this page
+    res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          results: tasks,
+          currentPage: page,
+          totalPages,
+          totalResults,
+        },
+        "Tasks fetched successfully"
+      )
+    );
+  }
+);
+
 /**
  * @desc  Update User Task
  * @route "PUT" /update-task/:taskId

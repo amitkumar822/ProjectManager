@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useGetUserTasksQuery } from "@/redux/features/api/taskApi";
+import { useGetTasksByProjectIdQuery, useGetUserTasksQuery } from "@/redux/features/api/taskApi";
 import ProductCard from "@/components/Card/ProductCard";
 
 import {
@@ -27,24 +27,47 @@ const statusOptions = [
 ];
 
 function TaskList() {
+
   const navigate = useNavigate();
   // Import hook to work with URL query parameters
   const [searchParams, setSearchParams] = useSearchParams();
+  const projectId = searchParams.get('project_id')?.toString() || "";
+
 
   // Extract initial values from URL query params (fallbacks are provided)
   const initialStatus = searchParams.get("status") || "";
-  const initialPage = parseInt(searchParams.get("page") || "10", 10);
-  const limit = parseInt(searchParams.get("limit") || "10", 10);
+
+  const rawPage = searchParams.get("page");
+  const initialPage = rawPage && !isNaN(Number(rawPage)) ? parseInt(rawPage, 10) : 1;
+
+  const rawLimit = searchParams.get("limit");
+  const limit = rawLimit && !isNaN(Number(rawLimit)) ? parseInt(rawLimit, 10) : 10;
+
 
   // Local state for filters and pagination
   const [statusFilter, setStatusFilter] = useState<string>(initialStatus);
   const [page, setPage] = useState<number>(initialPage);
 
-  const { data: taskData, isLoading } = useGetUserTasksQuery({
+  const { data: taskData, isLoading: userTaskLoading } = useGetUserTasksQuery({
     status: statusFilter,
     page,
     limit,
+  }, {
+    skip: !!projectId
   });
+
+  const { data: projectTaskData, isLoading: projectTaskLoading } = useGetTasksByProjectIdQuery({
+    status: statusFilter,
+    projectId,
+    page,
+    limit,
+  }, {
+    skip: !projectId
+  });
+
+  const taskSource = projectId ? projectTaskData : taskData;
+  const isLoading = projectId ? projectTaskLoading : userTaskLoading;
+
 
   // Reset to page 1 whenever status filter changes
   useEffect(() => {
@@ -58,11 +81,16 @@ function TaskList() {
       page: String(page),
       limit: String(limit),
     };
-    setSearchParams(params);
-  }, [statusFilter, page, limit]);
 
-  // Safely extract total pages from API response
-  const totalPages = taskData?.data?.totalPages || 1;
+    if (!!projectId) {
+      params.project_id = projectId;
+    }
+
+    setSearchParams(params, { replace: true });
+
+  }, [statusFilter, page, limit, projectId]);
+
+  const totalPages = taskSource?.data?.totalPages || 1;
 
   if (isLoading) return <LoadingPage />;
 
@@ -79,8 +107,8 @@ function TaskList() {
               variant="ghost"
               onClick={() => setStatusFilter(option.value)}
               className={`flex items-center cursor-pointer gap-2 px-4 py-2 rounded-full transition text-sm font-semibold tracking-tight shadow-md ${isActive
-                  ? "bg-white text-indigo-700 border border-indigo-500"
-                  : "text-white hover:bg-white/20"
+                ? "bg-white text-indigo-700 border border-indigo-500"
+                : "text-white hover:bg-white/20"
                 }`}
             >
               <Icon className="w-4 h-4" />
@@ -91,7 +119,7 @@ function TaskList() {
       </div>
 
       {/* Task List */}
-      {taskData?.data?.results.length === 0 ? (
+      {taskSource?.data?.results.length === 0 || taskSource === undefined ? (
         <div className="flex flex-col items-center justify-center gap-4 py-20 text-center text-gray-600">
           <h2 className="text-2xl font-semibold">No Tasks Found</h2>
           <p className="text-sm max-w-md">
@@ -106,7 +134,7 @@ function TaskList() {
           </Button>
         </div>
       ) : (
-        <ProductCard projectData={taskData?.data?.results} role="Task" />
+        <ProductCard projectData={taskSource?.data?.results} role="Task" />
       )}
 
 

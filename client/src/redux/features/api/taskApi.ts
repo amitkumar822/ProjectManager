@@ -24,11 +24,12 @@ export const taskApi = createApi({
       }),
       invalidatesTags: ["Task"],
     }),
+
     getUserTasks: builder.query<
       ApiResponse<PaginatedTaskResponse>,
       { status?: string; page?: number; limit?: number }
     >({
-      query: ({ status, page = 1, limit = 10 }) => {
+      query: ({ status, page, limit }) => {
         const params = new URLSearchParams();
         if (status) params.append("status", status);
         params.append("page", String(page));
@@ -39,6 +40,25 @@ export const taskApi = createApi({
           method: "GET",
         };
       },
+      providesTags: ["Task"],
+    }),
+
+    getTasksByProjectId: builder.query<
+      ApiResponse<PaginatedTaskResponse>,
+      { status?: string; projectId: string; page?: number; limit?: number }
+    >({
+      query: ({ status, projectId, page, limit }) => {
+        const params = new URLSearchParams();
+        if (status) params.append("status", status);
+        params.append("page", String(page));
+        params.append("limit", String(limit));
+
+        return {
+          url: `/project/${projectId}/tasks?${params.toString()}`,
+          method: "GET",
+        };
+      },
+
       providesTags: ["Task"],
     }),
 
@@ -67,6 +87,7 @@ export const taskApi = createApi({
 export const {
   useCreateTaskMutation,
   useGetUserTasksQuery,
+  useGetTasksByProjectIdQuery,
   useUpdateTaskMutation,
   useDeleteTaskMutation,
 } = taskApi;
