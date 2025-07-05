@@ -59,13 +59,9 @@ export const getUserTasks = asyncHandler(
 
     const { status } = req.query;
 
-    if (!status || typeof status !== "string") {
-      throw new ApiError(400, "Status Not Found");
-    }
-
     const filter: FilterQuery<ITask> = { user: userId };
     if (status) {
-      filter.status = status;
+      filter.status = status || "";
     }
 
     const tasks = await Task.find(filter).sort({ dueDate: 1 }).lean();
