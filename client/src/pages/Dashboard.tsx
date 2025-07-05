@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAppSelector } from "@/redux/app/reduxHook";
 import { useGetProjectsQuery } from "@/redux/features/api/projectApi";
 import ProductCard from "@/components/Card/ProductCard";
 import { Button } from "@/components/ui/button";
@@ -31,8 +30,6 @@ const Dashboard = () => {
   const [statusFilter, setStatusFilter] = useState<string>(initialStatus);
   const [page, setPage] = useState<number>(initialPage);
 
-  // Auth & navigation hook
-  const { user } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
 
   // Fetch projects based on filter, page, and limit
@@ -41,11 +38,6 @@ const Dashboard = () => {
     page,
     limit,
   });
-
-  // Redirect to login if user is not authenticated
-  useEffect(() => {
-    if (!user) navigate("/login");
-  }, [user, navigate]);
 
   // Reset to page 1 whenever status filter changes
   useEffect(() => {
