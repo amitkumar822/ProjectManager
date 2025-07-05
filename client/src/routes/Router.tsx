@@ -12,6 +12,7 @@ import {
   Route,
 } from "react-router-dom";
 import TaskList from "@/pages/TaskList";
+import SearchPage from "@/pages/SearchPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,6 +26,7 @@ const router = createBrowserRouter(
           <Route path="/dashboard/project/create" element={<CreateProject />} />
           <Route path="/dashboard/task/create" element={<CreateTask />} />
           <Route path="/dashboard/task/list" element={<TaskList />} />
+          <Route path="/dashboard/search" element={<SearchPage />} />
 
         </Route>
       </Route>

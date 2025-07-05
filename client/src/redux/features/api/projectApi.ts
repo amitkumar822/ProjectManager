@@ -5,6 +5,7 @@ import type {
   createProject,
   DeleteResponse,
   Project,
+  SearchResponse,
   UpdateProjectPayload,
 } from "@/types/projectTypes";
 
@@ -46,6 +47,13 @@ export const projectApi = createApi({
       }),
       invalidatesTags: ["Refreshing_Project"],
     }),
+
+    searchTaskProject: builder.query<ApiResponse<SearchResponse[]>, string>({
+      query: (keyword) => ({
+        url: `/search?keyword=${encodeURIComponent(keyword)}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -54,4 +62,5 @@ export const {
   useGetProjectsQuery,
   useDeleteProjectMutation,
   useUpdateProjectMutation,
+  useSearchTaskProjectQuery,
 } = projectApi;

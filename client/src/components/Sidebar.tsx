@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Folder, ListTodo, LogOut, List } from "lucide-react";
+import { LayoutDashboard, Folder, LogOut, List, Search } from "lucide-react";
 import { useAppDispatch } from "@/redux/app/reduxHook";
 import { logout } from "@/redux/features/authSlice";
 
@@ -21,6 +21,11 @@ const Sidebar = () => {
       to: "/dashboard/task/list",
       label: "Task List",
       icon: <List size={20} />,
+    },
+    {
+      to: "/dashboard/search",
+      label: "Search",
+      icon: <Search size={20} />,
     },
   ];
 

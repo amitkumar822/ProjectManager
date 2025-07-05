@@ -4,6 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import mongoose, { FilterQuery, UpdateQuery } from "mongoose";
+import Project from "../models/project.model";
 
 /**
  * @desc  Create task

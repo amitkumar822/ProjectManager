@@ -30,5 +30,15 @@ export interface UpdateProjectPayload {
   formData: createProject;
 }
 
+export type SearchResponse = {
+  type: "task" | "project";
+  title: string;
+  description: string;
+  status: string;
+  _id: string;
+  createdAt: string;
+};
+
+
 
 

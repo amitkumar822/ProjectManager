@@ -5,6 +5,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { ApiResponse } from "../utils/ApiResponse";
 import mongoose from "mongoose";
 import { ApiError } from "../utils/ApiError";
+import Task from "../models/task.model";
 
 /**
  * @desc  Create new Project
@@ -129,5 +130,61 @@ export const deleteProject = asyncHandler(
     res
       .status(200)
       .json(new ApiResponse(200, null, "Project deleted successfully"));
+  }
+);
+
+/**
+ * @desc  Search Task and Project
+ * @route "POST" /search?keyword=query
+ * @access Private
+ */
+export const searchTaskProject = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    const keyword = req.query.keyword?.toString().trim();
+    const userId = req.user?.userId;
+
+    if (!keyword) {
+      throw new ApiError(400, "Search keyword is required");
+    }
+
+    const searchRegex = { $regex: keyword, $options: "i" };
+
+    const [tasks, projects] = await Promise.all([
+      Task.find({
+        user: userId,
+        $or: [{ title: searchRegex }, { description: searchRegex }],
+      })
+        .populate("project", "title")
+        .sort({ createdAt: -1 })
+        .lean(),
+
+      Project.find({
+        user: userId,
+        $or: [{ title: searchRegex }, { description: searchRegex }],
+      })
+        .sort({ createdAt: -1 })
+        .lean(),
+    ]);
+
+    // Merge results into one array and add a `type` field
+    const combined = [
+      ...tasks.map((task) => ({ ...task, type: "task" })),
+      ...projects.map((project) => ({ ...project, type: "project" })),
+    ];
+
+    if (combined.length === 0) {
+      throw new ApiError(404, "No matching task or project found");
+    }
+
+    // Optional: sort merged results by createdAt
+    combined.sort(
+      (a, b) =>
+        new Date((a as any).createdAt).getTime() -
+        new Date((b as any).createdAt).getTime()
+    );
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, combined, "Combined search result fetched"));
   }
 );
