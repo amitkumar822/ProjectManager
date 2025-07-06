@@ -49,13 +49,13 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
         }));
     };
 
-    // 🟠 Soft Delete Task (Move to Trash)
+    // Soft Delete Task (Move to Trash)
     const [softDeleteTask, taskRes] = useSoftDeleteTaskMutation();
 
-    // 🟢 Soft Delete Project (Move to Trash)
+    // Soft Delete Project (Move to Trash)
     const [softDeleteProject, projectRes] = useSoftDeleteProjectMutation();
 
-    // 🔴 Permanently Delete (Task or Project)
+    // Permanently Delete (Task or Project)
     const [permanentlyDeleteTaskOrProject, pernDeleteRes] =
         usePermanentlyDeleteTaskOrProjectMutation();
 
@@ -84,7 +84,7 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
         }
     };
 
-    // 🟩 Recover (Task or Project)
+    // Recover (Task or Project)
     const [recoverTaskOrProject, recoverRes] = useRecoverTaskOrProjectMutation();
 
     const handleRecover = async (id: string) => {
