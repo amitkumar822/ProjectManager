@@ -174,7 +174,7 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                     <div className="flex relative items-start justify-between gap-2">
                                         <CardTitle
                                             onClick={() => toggleCard(project._id)}
-                                            className={`cursor-pointer mt-15 md:mt-3 md:text-lg md:font-bold font-semibold text-gray-800 ${isExpanded ? "" : "line-clamp-1"
+                                            className={`cursor-pointer mt-15 md:mt-3 md:font-bold font-semibold text-gray-800 ${isExpanded ? "" : "line-clamp-1"
                                                 }`}
                                         >
                                             <FileText className="inline-block w-5 h-5 text-purple-600 mr-2" />
@@ -342,7 +342,7 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                     className="cursor-pointer"
                                 >
                                     <p
-                                        className={`text-sm text-gray-700 ${isExpanded ? "" : "line-clamp-2"
+                                        className={`text-sm text-gray-700 text-justify ${isExpanded ? "" : "line-clamp-2"
                                             }`}
                                     >
                                         {project.description}
@@ -370,14 +370,15 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                                     </span>{" "}
                                                     {project?.project?.title || "N/A"}
                                                 </>
-                                                <div className="flex items-center gap-2 mt-2 text-sm text-gray-700">
+                                                {project.dueDate  && <div className="flex items-center gap-2 mt-2 text-sm text-gray-700">
                                                     <span className="font-medium text-gray-600">
                                                         📅 Due Date:
                                                     </span>
                                                     <span className="text-indigo-600 font-semibold">
+                                                        {/* {!!project.dueDate ? format(new Date(project.dueDate), "dd MMM yyyy") : "N/A"} */}
                                                         {format(new Date(project.dueDate), "dd MMM yyyy")}
                                                     </span>
-                                                </div>
+                                                </div>}
                                             </p>
                                         )}
                                     </div>

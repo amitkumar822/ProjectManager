@@ -14,7 +14,7 @@ import TaskList from "@/pages/TaskList";
 import SearchPage from "@/pages/SearchPage";
 import GuestRoute from "./GuestRoute";
 import ProtectedRoute from "./ProtectedRoute";
-import TrashPage from "@/pages/TrashPage";
+import RecycleBin from "@/pages/RecycleBin";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -48,7 +48,7 @@ const router = createBrowserRouter(
             <Route path="/dashboard/task/create" element={<CreateTask />} />
             <Route path="/dashboard/task/list" element={<TaskList />} />
             <Route path="/dashboard/search" element={<SearchPage />} />
-            <Route path="/dashboard/trash" element={<TrashPage />} />
+            <Route path="/dashboard/trash" element={<RecycleBin />} />
           </Route>
         </Route>
       </Route>

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Trash2 } from "lucide-react";
 
-function TrashPage() {
+function RecycleBin() {
   const navigate = useNavigate();
   const { data, isLoading } = useGetSoftTrashTaskProjectQuery();
   const [results, setResults] = useState<any[]>([]);
@@ -19,11 +19,17 @@ function TrashPage() {
   const hasData = results && results.length > 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-100 via-purple-100 to-blue-100 py-10 px-4">
+    <div className="min-h-screen -mt-5 bg-gradient-to-br from-rose-100 via-purple-100 to-blue-100 py-10 px-4">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-center text-purple-800 mb-8">
-          🗑️ Recycle Bin
-        </h1>
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-purple-800">
+            🗑️ Recycle Bin
+          </h1>
+          <p className="text-sm text-gray-600 mt-2">
+            Items in the Recycle Bin will be permanently deleted after 30 days.
+          </p>
+        </div>
+
 
         {isLoading ? (
           <div className="flex justify-center items-center min-h-[200px]">
@@ -53,4 +59,4 @@ function TrashPage() {
   );
 }
 
-export default TrashPage;
+export default RecycleBin;

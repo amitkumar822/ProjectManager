@@ -1,4 +1,4 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@/redux/app/reduxHook";
 import { logout } from "@/redux/features/authSlice";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-gradient-to-r from-indigo-500 via-sky-500 to-emerald-500 text-white shadow-md">
+    <header className="fixed top-0 z-50 w-full bg-gradient-to-r from-indigo-500 via-sky-500 to-emerald-500 text-white shadow-md">
       <nav className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3 md:px-6">
         {/* Logo */}
         <Link to="/" className="text-xl font-bold tracking-tight">
