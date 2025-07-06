@@ -50,6 +50,14 @@ export const projectApi = createApi({
       invalidatesTags: ["Refreshing_Project"],
     }),
 
+    softDeleteProject: builder.mutation<DeleteResponse, string>({
+      query: (projectId) => ({
+        url: `/soft-delete-project/${projectId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Refreshing_Project"],
+    }),
+
     updateProject: builder.mutation<void, UpdateProjectPayload>({
       query: ({ projectId, formData }) => ({
         url: `/update-project/${projectId}`,
@@ -65,6 +73,13 @@ export const projectApi = createApi({
         method: "GET",
       }),
     }),
+
+    getSoftTrashTaskProject: builder.query<ApiResponse<SearchResponse[]>, void>({
+      query: () => ({
+        url: `/trash-delete-task-project`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -72,6 +87,8 @@ export const {
   useCreateProjectMutation,
   useGetProjectsQuery,
   useDeleteProjectMutation,
+  useSoftDeleteProjectMutation,
   useUpdateProjectMutation,
   useSearchTaskProjectQuery,
+  useGetSoftTrashTaskProjectQuery,
 } = projectApi;

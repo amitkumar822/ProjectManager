@@ -8,14 +8,14 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Pencil, Trash2, PlusCircle, FileText, FolderPlus, View, TrashIcon } from "lucide-react";
+import { Pencil, Trash2, PlusCircle, FileText, FolderPlus, View, ArchiveRestore } from "lucide-react";
 import type { Project } from "@/types/projectTypes";
 import type { Task } from "@/types/taskType";
 import { useNavigate } from "react-router";
-import { useDeleteTaskMutation } from "@/redux/features/api/taskApi";
+import { useSoftDeleteTaskMutation } from "@/redux/features/api/taskApi";
 import { toast } from "react-toastify";
 import { extractErrorMessage } from "@/utils/apiError";
-import { useDeleteProjectMutation } from "@/redux/features/api/projectApi";
+import { useSoftDeleteProjectMutation } from "@/redux/features/api/projectApi";
 
 interface ProductCardProps {
     projectData?: Project[] | Task[];
@@ -35,22 +35,27 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
         }));
     };
 
-    const [deleteTask, taskRes] = useDeleteTaskMutation();
+    // Soft Delete
+    const [softDeleteTask, taskRes] = useSoftDeleteTaskMutation();
 
-    const [deleteProject, projectRes] = useDeleteProjectMutation()
+    const [softDeleteProject, projectRes] = useSoftDeleteProjectMutation()
 
     const handleDelete = async (id: string) => {
         const confirm = window.confirm(
-            `⚠️ Are you sure you want to permanently delete this ${role.toLowerCase()}?\nThis action cannot be undone.`
+            `🗑️ Are you sure you want to move this ${role.toLowerCase()} to Trash?\n\n` +
+            `This item will remain in Trash for 30 days and will be **automatically deleted permanently** after that.\n\n` +
+            `You can restore it anytime before deletion from the Trash section.`
         );
+
         if (confirm) {
             if (role === "Task") {
-                await deleteTask(id);
+                await softDeleteTask(id);
             } else if (role === "Project") {
-                await deleteProject(id)
+                await softDeleteProject(id);
             }
         }
     };
+
 
     // task effect
     useEffect(() => {
@@ -116,7 +121,7 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                                 {project.status.replace(/-/g, " ")}
                                             </Badge>
 
-                                            {role !== "Task" && (
+                                            {role !== "Task" && role !== "Recyle Bin" && (
                                                 <>
                                                     <TooltipProvider>
                                                         <Tooltip>
@@ -163,7 +168,8 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                                     </TooltipProvider>
                                                 </>
                                             )}
-                                            <TooltipProvider>
+
+                                            {role !== "Recyle Bin" && <TooltipProvider>
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
                                                         <Button
@@ -191,7 +197,7 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                                         <p>Edit</p>
                                                     </TooltipContent>
                                                 </Tooltip>
-                                            </TooltipProvider>
+                                            </TooltipProvider>}
 
                                             <TooltipProvider>
                                                 <Tooltip>
@@ -202,14 +208,23 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                                             className="text-orange-600 hover:bg-orange-100 cursor-pointer bg-orange-400/10"
                                                             onClick={() => handleDelete(project._id)}
                                                         >
-                                                            <Trash2 className="w-5 h-5" />
+                                                            {role === "Recyle Bin" ? (
+                                                                <Trash2 className="w-5 h-5" />
+                                                            ) : (
+                                                                <ArchiveRestore className="w-5 h-5" />
+                                                            )}
                                                         </Button>
                                                     </TooltipTrigger>
                                                     <TooltipContent>
-                                                        <p>Move to Trash</p>
+                                                        {role === "Recyle Bin" ? (
+                                                            <p>Permanently Delete</p>
+                                                        ) : (
+                                                            <p>Move to Recycle Bin</p>
+                                                        )}
                                                     </TooltipContent>
                                                 </Tooltip>
                                             </TooltipProvider>
+
                                         </div>
                                     </div>
                                 </CardHeader>

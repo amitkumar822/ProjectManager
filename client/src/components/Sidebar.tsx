@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Folder, List, Search } from "lucide-react";
+import { LayoutDashboard, Folder, List, Search, ArchiveRestore } from "lucide-react";
 
 const Sidebar = () => {
 
@@ -24,6 +24,11 @@ const Sidebar = () => {
       label: "Search",
       icon: <Search size={20} />,
     },
+    {
+      to: "/dashboard/trash",
+      label: "Recycle Bin",
+      icon: <ArchiveRestore size={20} />,
+    }
   ];
 
   return (

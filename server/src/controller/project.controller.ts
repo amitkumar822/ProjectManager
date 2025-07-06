@@ -151,6 +151,30 @@ export const deleteProject = asyncHandler(
 );
 
 /**
+ * @desc  Soft Delete Project
+ * @route "PUT" /soft-delete-project/:projectId
+ * @access Private
+ */
+export const softDeleteProject = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    const userId = req.user?.userId;
+    const { projectId } = req.params;
+
+    const task = await Project.findOneAndUpdate(
+      { _id: projectId, user: userId },
+      { isDeleted: true, deletedAt: new Date() },
+      { new: true }
+    );
+
+    if (!task) {
+      throw new ApiError(404, "Project not found or unauthorized");
+    }
+
+    res.status(200).json(new ApiResponse(200, null, "Project moved to trash"));
+  }
+);
+
+/**
  * @desc  Search Task and Project
  * @route "POST" /search?keyword=query
  * @access Private
@@ -168,7 +192,8 @@ export const searchTaskProject = asyncHandler(
 
     const [tasks, projects] = await Promise.all([
       Task.find({
-        user: userId, isDeleted: false,
+        user: userId,
+        isDeleted: false,
         $or: [{ title: searchRegex }, { description: searchRegex }],
       })
         .populate("project", "title")
@@ -176,7 +201,8 @@ export const searchTaskProject = asyncHandler(
         .lean(),
 
       Project.find({
-        user: userId, isDeleted: false,
+        user: userId,
+        isDeleted: false,
         $or: [{ title: searchRegex }, { description: searchRegex }],
       })
         .sort({ createdAt: -1 })
@@ -207,25 +233,50 @@ export const searchTaskProject = asyncHandler(
 );
 
 /**
- * @desc  Soft Delete Project
- * @route "PUT" /soft-delete-project/:projectId
+ * @desc  Trash Delete Task and Project
+ * @route "GET" /trash-delete-task-project
  * @access Private
  */
-export const softDeleteProject = asyncHandler(
+export const getTrashDeleteTaskProject = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
     const userId = req.user?.userId;
-    const { projectId } = req.params;
 
-    const task = await Project.findOneAndUpdate(
-      { _id: projectId, user: userId },
-      { isDeleted: true, deletedAt: new Date() },
-      { new: true }
-    );
+    const [tasks, projects] = await Promise.all([
+      Task.find({
+        user: userId,
+        isDeleted: true,
+      })
+        .populate("project", "title")
+        .sort({ createdAt: -1 })
+        .lean(),
 
-    if (!task) {
-      throw new ApiError(404, "Project not found or unauthorized");
+      Project.find({
+        user: userId,
+        isDeleted: true,
+      })
+        .sort({ createdAt: -1 })
+        .lean(),
+    ]);
+
+    // Merge results into one array and add a `type` field
+    const combined = [
+      ...tasks.map((task) => ({ ...task, type: "task" })),
+      ...projects.map((project) => ({ ...project, type: "project" })),
+    ];
+
+    if (combined.length === 0) {
+      throw new ApiError(404, "No matching task or project found");
     }
 
-    res.status(200).json(new ApiResponse(200, null, "Project moved to trash"));
+    // sort merged results by createdAt
+    combined.sort(
+      (a, b) =>
+        new Date((a as any).createdAt).getTime() -
+        new Date((b as any).createdAt).getTime()
+    );
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, combined, "Combined search result fetched"));
   }
 );

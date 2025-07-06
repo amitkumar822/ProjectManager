@@ -18,11 +18,11 @@ import Task from "../models/task.model";
 //   }
 // });
 
-
 // ⏰ Run every 10 seconds
+
 cron.schedule("*/60 * * * * *", async () => {
   try {
-    const thresholdDate = new Date(Date.now() - 1 * 60 * 1000); // 1 min ago
+    const thresholdDate = new Date(Date.now() - 2 * 60 * 60 * 1000); // 2 hours
 
     const result = await Task.deleteMany({
       isDeleted: true,

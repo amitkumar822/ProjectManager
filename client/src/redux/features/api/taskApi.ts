@@ -81,6 +81,14 @@ export const taskApi = createApi({
       }),
       invalidatesTags: ["Task"],
     }),
+
+    softDeleteTask: builder.mutation<{ message: string }, string>({
+      query: (taskId) => ({
+        url: `/soft-delete-task/${taskId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Task"],
+    }),
   }),
 });
 
@@ -90,4 +98,5 @@ export const {
   useGetTasksByProjectIdQuery,
   useUpdateTaskMutation,
   useDeleteTaskMutation,
+  useSoftDeleteTaskMutation,
 } = taskApi;
