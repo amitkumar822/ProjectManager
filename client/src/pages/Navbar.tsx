@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@/redux/app/reduxHook";
 import { logout } from "@/redux/features/authSlice";
 import { Button } from "@/components/ui/button";
@@ -6,6 +6,7 @@ import { Menu, LogIn } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Logout from "./auth/Logout";
+import { navLinks } from "@/components/Sidebar";
 
 const Navbar = () => {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
@@ -59,13 +60,18 @@ const Navbar = () => {
           </SheetTrigger>
           <SheetContent className="bg-white text-black p-6">
             <nav className="flex flex-col gap-4 mt-4">
-              <Link to="/" onClick={() => setOpen(false)} className="font-medium">
-                Home
-              </Link>
               {isAuthenticated && (
-                <Link to="/dashboard" onClick={() => setOpen(false)} className="font-medium">
-                  Dashboard
-                </Link>
+                navLinks.map(({ to, label, icon }) => (
+                  <Link
+                    key={to}
+                    to={to}
+                    onClick={() => setOpen(!open)}
+                    className="flex items-center gap-3 px-4 py-1 rounded-lg text-base font-medium transition-all hover:bg-white/10"
+                  >
+                    {icon}
+                    {label}
+                  </Link>
+                ))
               )}
               {isAuthenticated ? (
                 <Button

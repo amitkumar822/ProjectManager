@@ -3,33 +3,6 @@ import { LayoutDashboard, Folder, List, Search, ArchiveRestore } from "lucide-re
 
 const Sidebar = () => {
 
-  const navLinks = [
-    {
-      to: "/dashboard",
-      label: "Dashboard",
-      icon: <LayoutDashboard size={20} />,
-    },
-    {
-      to: "/dashboard/project/create",
-      label: "Create Project",
-      icon: <Folder size={20} />,
-    },
-    {
-      to: "/dashboard/task/list",
-      label: "Task List",
-      icon: <List size={20} />,
-    },
-    {
-      to: "/dashboard/search",
-      label: "Search",
-      icon: <Search size={20} />,
-    },
-    {
-      to: "/dashboard/trash",
-      label: "Recycle Bin",
-      icon: <ArchiveRestore size={20} />,
-    }
-  ];
 
   return (
     <aside className="fixed top-0 left-0 h-full w-64 bg-gradient-to-br from-indigo-600 to-emerald-500 text-white shadow-lg hidden md:block z-40">
@@ -56,3 +29,32 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+
+export const navLinks = [
+  {
+    to: "/dashboard",
+    label: "Dashboard",
+    icon: <LayoutDashboard size={20} />,
+  },
+  {
+    to: "/dashboard/project/create",
+    label: "Create Project",
+    icon: <Folder size={20} />,
+  },
+  {
+    to: "/dashboard/task/list",
+    label: "Task List",
+    icon: <List size={20} />,
+  },
+  {
+    to: "/dashboard/search",
+    label: "Search",
+    icon: <Search size={20} />,
+  },
+  {
+    to: "/dashboard/trash",
+    label: "Recycle Bin",
+    icon: <ArchiveRestore size={20} />,
+  }
+];
