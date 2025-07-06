@@ -12,35 +12,25 @@ app.get("/", (_, res) => {
   res.send(`Welcome to Project Manager - PID: ${process.pid}`);
 });
 
-// if (cluster.isPrimary) {
-//   for (let i = 0; i < totalCPUs; i++) {
-//     cluster.fork();
-//   }
+if (cluster.isPrimary) {
+  for (let i = 0; i < totalCPUs; i++) {
+    cluster.fork();
+  }
 
-//   cluster.on("exit", (worker) => {
-//     console.log(`Worker ${worker.process.pid} died. Spawning a new one...`);
-//     cluster.fork();
-//   });
-// } else {
-//   connectDB()
-//     .then(() => {
-//       app.listen(PORT, () => {
-//         console.log(`Server running on http://localhost:${PORT}`);
-//         // console.log(`Server running on: ${process.pid}`);
-//       });
-//     })
-//     .catch((err) => {
-//       console.error(err.message);
-//     });
-// }
-
-connectDB()
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-      // console.log(`Server running on: ${process.pid}`);
-    });
-  })
-  .catch((err) => {
-    console.error(err.message);
+  cluster.on("exit", (worker) => {
+    console.log(`Worker ${worker.process.pid} died. Spawning a new one...`);
+    cluster.fork();
   });
+} else {
+  connectDB()
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+        // console.log(`Server running on: ${process.pid}`);
+      });
+    })
+    .catch((err) => {
+      console.error(err.message);
+    });
+}
+
