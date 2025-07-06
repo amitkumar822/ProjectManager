@@ -8,7 +8,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Pencil, Trash2, PlusCircle, FileText, FolderPlus, View } from "lucide-react";
+import { Pencil, Trash2, PlusCircle, FileText, FolderPlus, View, TrashIcon } from "lucide-react";
 import type { Project } from "@/types/projectTypes";
 import type { Task } from "@/types/taskType";
 import { useNavigate } from "react-router";
@@ -199,14 +199,14 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                                         <Button
                                                             variant="ghost"
                                                             size="icon"
-                                                            className="text-red-600 hover:bg-red-100 cursor-pointer bg-red-400/10"
+                                                            className="text-orange-600 hover:bg-orange-100 cursor-pointer bg-orange-400/10"
                                                             onClick={() => handleDelete(project._id)}
                                                         >
                                                             <Trash2 className="w-5 h-5" />
                                                         </Button>
                                                     </TooltipTrigger>
                                                     <TooltipContent>
-                                                        <p>Delete</p>
+                                                        <p>Move to Trash</p>
                                                     </TooltipContent>
                                                 </Tooltip>
                                             </TooltipProvider>

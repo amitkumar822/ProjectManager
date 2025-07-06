@@ -5,6 +5,8 @@ export interface IProject extends Document {
   description?: string;
   status: "active" | "completed";
   user: Types.ObjectId;
+  isDeleted?: boolean,
+  deletedAt?: Date | null,
 }
 
 const projectSchema: Schema<IProject> = new Schema<IProject>(
@@ -27,6 +29,14 @@ const projectSchema: Schema<IProject> = new Schema<IProject>(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+    isDeleted: { 
+      type: Boolean, 
+      default: false 
+    },
+    deletedAt: { 
+      type: Date, 
+      default: null 
     },
   },
   {

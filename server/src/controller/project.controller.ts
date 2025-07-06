@@ -48,7 +48,7 @@ export const getUserProjects = asyncHandler(
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
 
-    const filter: Record<string, any> = { user: userId };
+    const filter: Record<string, any> = { user: userId, isDeleted: false };
     if (status) {
       filter.status = status;
     }
@@ -168,7 +168,7 @@ export const searchTaskProject = asyncHandler(
 
     const [tasks, projects] = await Promise.all([
       Task.find({
-        user: userId,
+        user: userId, isDeleted: false,
         $or: [{ title: searchRegex }, { description: searchRegex }],
       })
         .populate("project", "title")
@@ -176,7 +176,7 @@ export const searchTaskProject = asyncHandler(
         .lean(),
 
       Project.find({
-        user: userId,
+        user: userId, isDeleted: false,
         $or: [{ title: searchRegex }, { description: searchRegex }],
       })
         .sort({ createdAt: -1 })
@@ -203,5 +203,29 @@ export const searchTaskProject = asyncHandler(
     res
       .status(200)
       .json(new ApiResponse(200, combined, "Combined search result fetched"));
+  }
+);
+
+/**
+ * @desc  Soft Delete Project
+ * @route "PUT" /soft-delete-project/:projectId
+ * @access Private
+ */
+export const softDeleteProject = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    const userId = req.user?.userId;
+    const { projectId } = req.params;
+
+    const task = await Project.findOneAndUpdate(
+      { _id: projectId, user: userId },
+      { isDeleted: true, deletedAt: new Date() },
+      { new: true }
+    );
+
+    if (!task) {
+      throw new ApiError(404, "Project not found or unauthorized");
+    }
+
+    res.status(200).json(new ApiResponse(200, null, "Project moved to trash"));
   }
 );

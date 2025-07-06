@@ -42,10 +42,14 @@ const taskSchema: Schema<ITask> = new Schema(
       ref: "User",
       required: true,
     },
-
-    // ✅ Soft delete support
-    isDeleted: { type: Boolean, default: false },
-    deletedAt: { type: Date, default: null },
+    isDeleted: { 
+      type: Boolean, 
+      default: false 
+    },
+    deletedAt: { 
+      type: Date, 
+      default: null 
+    },
   },
   { timestamps: true }
 );
