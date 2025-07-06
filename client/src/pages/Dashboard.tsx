@@ -38,6 +38,8 @@ const Dashboard = () => {
     status: statusFilter,
     page,
     limit,
+  },{
+    refetchOnMountOrArgChange: true,
   });
 
   // Reset to page 1 whenever status filter changes

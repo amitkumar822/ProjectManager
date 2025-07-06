@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Mail, Lock, LogIn, UserPlus, Loader2 } from "lucide-react";
+import { Mail, Lock, LogIn, UserPlus, Loader2, Eye, EyeOff } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
@@ -36,6 +36,8 @@ type AuthSchema = z.infer<typeof authSchema>;
 export function AuthPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const [showPassword, setShowPassword] = useState<boolean>(false)
 
   const [tab, setTab] = useState<"login" | "register">("login");
 
@@ -155,12 +157,12 @@ export function AuthPage() {
                         </p>
                       )}
                     </div>
-                    <div className="grid gap-1">
+                    <div className="grid gap-1 relative">
                       <Label className="flex items-center gap-2 text-gray-800">
                         <Lock size={16} /> Password
                       </Label>
                       <Input
-                        type="password"
+                        type={`${showPassword ? "text" : "password"}`}
                         autoComplete={
                           mode === "login" ? "current-password" : "new-password"
                         }
@@ -168,6 +170,9 @@ export function AuthPage() {
                         placeholder="••••••••"
                         className="bg-white/70 backdrop-blur-md border-none focus:ring-2 focus:ring-indigo-300"
                       />
+                      <div className="absolute top-1/2 right-2">
+                        {showPassword ? <EyeOff width={20} onClick={() => setShowPassword(!showPassword)} className="cursor-pointer" /> : <Eye width={20} onClick={() => setShowPassword(!showPassword)}  className="cursor-pointer" />}
+                      </div>
                       {errors.password && (
                         <p className="text-xs text-red-500">
                           {errors.password.message}
