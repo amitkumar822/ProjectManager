@@ -85,6 +85,7 @@ export function AuthPage() {
     if (regState.isSuccess) {
       toast.success(regState.data.message || "User Register Successful");
     } else if (regState.error) {
+      console.log("Login Error: ", regState.error)
       toast.error(
         extractErrorMessage(regState.error) || "User Register Failed"
       );

@@ -14,6 +14,7 @@ export interface Project {
   updatedAt: string;
   results: any;
   project?: any;
+  dueDate?: any;
 }
 
 export interface createProject {

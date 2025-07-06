@@ -8,15 +8,27 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Pencil, Trash2, PlusCircle, FileText, FolderPlus, View, ArchiveRestore } from "lucide-react";
+import {
+    Pencil,
+    Trash2,
+    PlusCircle,
+    FileText,
+    FolderPlus,
+    View,
+    ArchiveRestore,
+} from "lucide-react";
 import type { Project } from "@/types/projectTypes";
 import type { Task } from "@/types/taskType";
 import { useNavigate } from "react-router";
 import { useSoftDeleteTaskMutation } from "@/redux/features/api/taskApi";
 import { toast } from "react-toastify";
 import { extractErrorMessage } from "@/utils/apiError";
-import { usePermanentlyDeleteTaskOrProjectMutation, useRecoverTaskOrProjectMutation, useSoftDeleteProjectMutation } from "@/redux/features/api/projectApi";
-
+import {
+    usePermanentlyDeleteTaskOrProjectMutation,
+    useRecoverTaskOrProjectMutation,
+    useSoftDeleteProjectMutation,
+} from "@/redux/features/api/projectApi";
+import { format } from "date-fns";
 
 interface ProductCardProps {
     projectData?: Project[] | Task[];
@@ -24,6 +36,7 @@ interface ProductCardProps {
 }
 
 const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
+
     const navigate = useNavigate();
     const [expandedCards, setExpandedCards] = useState<{
         [key: string]: boolean;
@@ -40,11 +53,11 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
     const [softDeleteTask, taskRes] = useSoftDeleteTaskMutation();
 
     // 🟢 Soft Delete Project (Move to Trash)
-    const [softDeleteProject, projectRes] = useSoftDeleteProjectMutation()
+    const [softDeleteProject, projectRes] = useSoftDeleteProjectMutation();
 
     // 🔴 Permanently Delete (Task or Project)
-    const [permanentlyDeleteTaskOrProject, pernDeleteRes] = usePermanentlyDeleteTaskOrProjectMutation()
-
+    const [permanentlyDeleteTaskOrProject, pernDeleteRes] =
+        usePermanentlyDeleteTaskOrProjectMutation();
 
     const handleDelete = async (id: string) => {
         if (role === "Recyle Bin") {
@@ -72,7 +85,7 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
     };
 
     // 🟩 Recover (Task or Project)
-    const [recoverTaskOrProject, recoverRes] = useRecoverTaskOrProjectMutation()
+    const [recoverTaskOrProject, recoverRes] = useRecoverTaskOrProjectMutation();
 
     const handleRecover = async (id: string) => {
         const confirm = window.confirm(
@@ -91,36 +104,49 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
         if (taskRes.isSuccess) {
             toast.success("Task moved to Trash successfully.");
         } else if (taskRes.error) {
-            toast.error(extractErrorMessage(taskRes.error) || "Failed to move Task to Trash.");
+            toast.error(
+                extractErrorMessage(taskRes.error) || "Failed to move Task to Trash."
+            );
         }
 
         // 🟢 Project moved to Trash
         if (projectRes.isSuccess) {
             toast.success("Project moved to Trash successfully.");
         } else if (projectRes.error) {
-            toast.error(extractErrorMessage(projectRes.error) || "Failed to move Project to Trash.");
+            toast.error(
+                extractErrorMessage(projectRes.error) ||
+                "Failed to move Project to Trash."
+            );
         }
 
         // 🔴 Permanently Deleted
         if (pernDeleteRes.isSuccess) {
             toast.success("Item permanently deleted.");
         } else if (pernDeleteRes.error) {
-            toast.error(extractErrorMessage(pernDeleteRes.error) || "Failed to permanently delete item.");
+            toast.error(
+                extractErrorMessage(pernDeleteRes.error) ||
+                "Failed to permanently delete item."
+            );
         }
 
         // 🟩 Recovered from Trash
         if (recoverRes.isSuccess) {
             toast.success("Item successfully recovered from Trash.");
         } else if (recoverRes.error) {
-            toast.error(extractErrorMessage(recoverRes.error) || "Failed to recover item.");
+            toast.error(
+                extractErrorMessage(recoverRes.error) || "Failed to recover item."
+            );
         }
     }, [
-        taskRes.isSuccess, taskRes.error,
-        projectRes.isSuccess, projectRes.error,
-        pernDeleteRes.isSuccess, pernDeleteRes.error,
-        recoverRes.isSuccess, recoverRes.error
+        taskRes.isSuccess,
+        taskRes.error,
+        projectRes.isSuccess,
+        projectRes.error,
+        pernDeleteRes.isSuccess,
+        pernDeleteRes.error,
+        recoverRes.isSuccess,
+        recoverRes.error,
     ]);
-
 
     return (
         <>
@@ -155,15 +181,27 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                             {project.title}
                                         </CardTitle>
 
-
                                         <div className="flex items-center gap-2">
                                             <Badge
                                                 className={`text-white py-1 px-3 rounded-full capitalize text-xs font-semibold
-                                                    ${project.status === "todo" && "bg-blue-500"}
-                                                    ${project.status === "in-progress" && "bg-purple-500"}
-                                                    ${project.status === "done" && "bg-green-600"}
-                                                    ${project.status === "completed" && "bg-green-700"}
-                                                    ${project.status === "active" && "bg-yellow-500"}
+                                                    ${project.status ===
+                                                    "todo" && "bg-blue-500"
+                                                    }
+                                                    ${project.status ===
+                                                    "in-progress" &&
+                                                    "bg-purple-500"
+                                                    }
+                                                    ${project.status ===
+                                                    "done" && "bg-green-600"
+                                                    }
+                                                    ${project.status ===
+                                                    "completed" &&
+                                                    "bg-green-700"
+                                                    }
+                                                    ${project.status ===
+                                                    "active" &&
+                                                    "bg-yellow-500"
+                                                    }
                                                 `}
                                             >
                                                 {project.status.replace(/-/g, " ")}
@@ -217,35 +255,39 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                                 </>
                                             )}
 
-                                            {role !== "Recyle Bin" && <TooltipProvider>
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            className="text-blue-600 hover:bg-blue-100 cursor-pointer bg-blue-400/10"
-
-                                                            onClick={() =>
-                                                                role === "Task" ? navigate(
-                                                                    `/dashboard/task/create?project_id=${project._id}`, {
-                                                                    state: { editTask: project }
+                                            {role !== "Recyle Bin" && (
+                                                <TooltipProvider>
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                className="text-blue-600 hover:bg-blue-100 cursor-pointer bg-blue-400/10"
+                                                                onClick={() =>
+                                                                    role === "Task"
+                                                                        ? navigate(
+                                                                            `/dashboard/task/create?project_id=${project._id}`,
+                                                                            {
+                                                                                state: { editTask: project },
+                                                                            }
+                                                                        )
+                                                                        : navigate(
+                                                                            `/dashboard/project/create?project_id=${project._id}`,
+                                                                            {
+                                                                                state: { editProject: project },
+                                                                            }
+                                                                        )
                                                                 }
-                                                                ) :
-                                                                    navigate(
-                                                                        `/dashboard/project/create?project_id=${project._id}`, {
-                                                                        state: { editProject: project }
-                                                                    }
-                                                                    )
-                                                            }
-                                                        >
-                                                            <Pencil className="w-5 h-5" />
-                                                        </Button>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>
-                                                        <p>Edit</p>
-                                                    </TooltipContent>
-                                                </Tooltip>
-                                            </TooltipProvider>}
+                                                            >
+                                                                <Pencil className="w-5 h-5" />
+                                                            </Button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>
+                                                            <p>Edit</p>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </TooltipProvider>
+                                            )}
 
                                             <TooltipProvider>
                                                 <Tooltip>
@@ -273,24 +315,25 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                                 </Tooltip>
                                             </TooltipProvider>
 
-                                            {role === "Recyle Bin" && <TooltipProvider>
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            onClick={() => handleRecover(project._id)}
-                                                            className="text-green-600 hover:bg-green-100 bg-green-400/10 cursor-pointer"
-                                                        >
-                                                            <ArchiveRestore className="w-5 h-5" />
-                                                        </Button>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>
-                                                        <p>Recover</p>
-                                                    </TooltipContent>
-                                                </Tooltip>
-                                            </TooltipProvider>}
-
+                                            {role === "Recyle Bin" && (
+                                                <TooltipProvider>
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                onClick={() => handleRecover(project._id)}
+                                                                className="text-green-600 hover:bg-green-100 bg-green-400/10 cursor-pointer"
+                                                            >
+                                                                <ArchiveRestore className="w-5 h-5" />
+                                                            </Button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>
+                                                            <p>Recover</p>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </TooltipProvider>
+                                            )}
                                         </div>
                                     </div>
                                 </CardHeader>
@@ -308,22 +351,37 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
 
                                 <hr className="border-t border-gray-300 mx-6" />
 
-                                {(
+                                {
                                     <div className="px-6 pb-4 text-sm text-gray-700 space-y-1">
                                         <p>
-                                            <span className="font-medium text-gray-600">📩 Created By:</span>{" "}
-                                            {typeof project.user === "object" && "email" in project.user
+                                            <span className="font-medium text-gray-600">
+                                                📩 Created By:
+                                            </span>{" "}
+                                            {typeof project.user === "object" &&
+                                                "email" in project.user
                                                 ? project.user.email
                                                 : "Unknown"}
-
                                         </p>
-                                        {role !== "Project" && <p>
-                                            <span className="font-medium text-gray-600">📁 Associated Project:</span>{" "}
-                                            {project?.project?.title || "N/A"}
-                                        </p>}
+                                        {role !== "Project" && (
+                                            <p>
+                                                <>
+                                                    <span className="font-medium text-gray-600">
+                                                        📁 Associated Project:
+                                                    </span>{" "}
+                                                    {project?.project?.title || "N/A"}
+                                                </>
+                                                <div className="flex items-center gap-2 mt-2 text-sm text-gray-700">
+                                                    <span className="font-medium text-gray-600">
+                                                        📅 Due Date:
+                                                    </span>
+                                                    <span className="text-indigo-600 font-semibold">
+                                                        {format(new Date(project.dueDate), "dd MMM yyyy")}
+                                                    </span>
+                                                </div>
+                                            </p>
+                                        )}
                                     </div>
-                                )}
-
+                                }
                             </Card>
                         );
                     })}
