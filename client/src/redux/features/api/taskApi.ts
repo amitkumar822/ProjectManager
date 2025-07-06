@@ -7,6 +7,7 @@ import type {
   UpdateTaskPayload,
 } from "@/types/taskType";
 import type { ApiResponse } from "@/types/apiResErrorType";
+import { projectApi } from "./projectApi";
 
 export const taskApi = createApi({
   reducerPath: "taskApi",
@@ -88,6 +89,15 @@ export const taskApi = createApi({
         method: "DELETE",
       }),
       invalidatesTags: ["Task"],
+
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          dispatch(projectApi.util.invalidateTags(["Refreshing_Project"]));
+        } catch (error) {
+          console.error(error);
+        }
+      },
     }),
   }),
 });

@@ -8,6 +8,7 @@ import type {
   SearchResponse,
   UpdateProjectPayload,
 } from "@/types/projectTypes";
+import { taskApi } from "./taskApi";
 
 export const projectApi = createApi({
   reducerPath: "projectApi",
@@ -72,6 +73,7 @@ export const projectApi = createApi({
           url: `/trash-delete-task-project`,
           method: "GET",
         }),
+        providesTags: ["Refreshing_Project"],
       }
     ),
 
@@ -81,6 +83,16 @@ export const projectApi = createApi({
         method: "DELETE",
       }),
       invalidatesTags: ["Refreshing_Project"],
+
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          dispatch(projectApi.util.invalidateTags(["Refreshing_Project"]));
+          dispatch(taskApi.util.invalidateTags(["Task"]));
+        } catch (error) {
+          console.error("Permanent delete mutation failed", error);
+        }
+      },
     }),
 
     recoverTaskOrProject: builder.mutation<void, string>({
@@ -89,6 +101,16 @@ export const projectApi = createApi({
         method: "POST",
       }),
       invalidatesTags: ["Refreshing_Project"],
+
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          dispatch(projectApi.util.invalidateTags(["Refreshing_Project"]));
+          dispatch(taskApi.util.invalidateTags(["Task"]));
+        } catch (error) {
+          console.error("Recover mutation failed", error);
+        }
+      },
     }),
   }),
 });
