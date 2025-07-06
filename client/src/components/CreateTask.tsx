@@ -70,6 +70,8 @@ function CreateTask() {
   // Toast notification
   useEffect(() => {
     if (taskRes.isSuccess) {
+      navigate("/dashboard")
+      toast.success("Task Create successfully");
     } else if (taskRes.error) {
       toast.error(extractErrorMessage(taskRes.error) || "Failed to create task");
     } else if (updateRes.isSuccess) {

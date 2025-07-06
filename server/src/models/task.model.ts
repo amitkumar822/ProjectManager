@@ -7,6 +7,8 @@ export interface ITask extends Document {
   dueDate: Date;
   project: Types.ObjectId;
   user: Types.ObjectId;
+  isDeleted?: boolean,
+  deletedAt?: Date | null,
 }
 
 const taskSchema: Schema<ITask> = new Schema(
@@ -40,6 +42,10 @@ const taskSchema: Schema<ITask> = new Schema(
       ref: "User",
       required: true,
     },
+
+    // ✅ Soft delete support
+    isDeleted: { type: Boolean, default: false },
+    deletedAt: { type: Date, default: null },
   },
   { timestamps: true }
 );

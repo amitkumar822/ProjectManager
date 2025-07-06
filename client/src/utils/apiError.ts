@@ -18,3 +18,10 @@ export const extractErrorMessage = (error: unknown): string => {
   }
   return "An unexpected error occurred";
 };
+
+export const extractErrorStatusCode = (error: unknown):number => {
+  if (isFetchBaseQueryError(error)) {
+    return error.data?.statusCode;
+  }
+  return 0;
+}

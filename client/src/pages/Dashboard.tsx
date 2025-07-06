@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { CheckCheck, ClipboardList, Hammer } from "lucide-react";
 import LoadingPage from "@/components/LoadingPage";
+import { extractErrorStatusCode } from "@/utils/apiError";
 
 const projectStatusOptions = [
   { label: "All", value: "", icon: ClipboardList },
@@ -33,7 +34,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   // Fetch projects based on filter, page, and limit
-  const { data: projectData, isLoading } = useGetProjectsQuery({
+  const { data: projectData, isLoading, error } = useGetProjectsQuery({
     status: statusFilter,
     page,
     limit,
@@ -82,9 +83,9 @@ const Dashboard = () => {
           );
         })}
       </div>
-
+        
       {/* Project List */}
-      {projectData?.data?.results.length === 0 ? (
+      {projectData?.data?.results.length === 0 || extractErrorStatusCode(error) === 404 ? (
         <div className="flex flex-col items-center justify-center gap-4 py-20 text-center text-gray-600">
           <h2 className="text-2xl font-semibold">No Projects Found</h2>
           <p className="text-sm max-w-md">
@@ -92,7 +93,7 @@ const Dashboard = () => {
           </p>
           <Button
             variant="default"
-            className="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full shadow"
+            className="mt-4 cursor-pointer bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full shadow"
             onClick={() => navigate("/dashboard/project/create")}
           >
             Create New Project

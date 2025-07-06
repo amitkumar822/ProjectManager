@@ -5,6 +5,7 @@ import {
   deleteTask,
   getAllUserTasks,
   getTasksByProjectId,
+  softDeleteTask,
   updateTask,
 } from "../controller/task.controller";
 
@@ -15,5 +16,7 @@ router.get("/get-all-task", isAuthenticated, getAllUserTasks);
 router.get("/project/:projectId/tasks", isAuthenticated, getTasksByProjectId);
 router.put("/update-task/:taskId", isAuthenticated, updateTask);
 router.delete("/delete-task/:taskId", isAuthenticated, deleteTask);
+
+router.delete("/soft-delete-task/:taskId", isAuthenticated, softDeleteTask);
 
 export default router;

@@ -2,6 +2,7 @@ import app from "./app";
 import connectDB from "./config/db";
 import cluster from "cluster";
 import os from "os";
+import "../src/utils/autoDeleteCron";
 
 const totalCPUs = os.cpus().length;
 

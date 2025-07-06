@@ -4,7 +4,6 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import mongoose, { FilterQuery, UpdateQuery } from "mongoose";
-import Project from "../models/project.model";
 
 /**
  * @desc  Create task
@@ -64,10 +63,11 @@ export const getAllUserTasks = asyncHandler(
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
 
-    const filter: FilterQuery<ITask> = { user: userId };
+    const filter: FilterQuery<ITask> = { user: userId, isDeleted: false };
     if (status) {
       filter.status = status || "";
     }
+    
 
     // Get total count for pagination
     const totalResults = await Task.countDocuments(filter);
@@ -98,6 +98,11 @@ export const getAllUserTasks = asyncHandler(
   }
 );
 
+/**
+ * @desc  Get All User Task BY ID
+ * @route "GET" /project/:projectId/tasks?status=query&page1=&limit=10
+ * @access Private
+ */
 export const getTasksByProjectId = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
     const { projectId } = req.params;
@@ -108,7 +113,7 @@ export const getTasksByProjectId = asyncHandler(
 
     const { status } = req.query;
 
-    const filter: FilterQuery<ITask> = { project: projectId };
+    const filter: FilterQuery<ITask> = { project: projectId, isDeleted: false };
     if (status) {
       filter.status = status;
     }
@@ -185,7 +190,7 @@ export const updateTask = asyncHandler(
 );
 
 /**
- * @desc  Update User Task
+ * @desc  Delete User Task
  * @route "PUT" /delete-task/:taskId
  * @access Private
  */
@@ -212,5 +217,29 @@ export const deleteTask = asyncHandler(
     res
       .status(200)
       .json(new ApiResponse(200, null, "Task deleted successfully"));
+  }
+);
+
+/**
+ * @desc  Soft Delete Task
+ * @route "PUT" /soft-delete-task/:taskId
+ * @access Private
+ */
+export const softDeleteTask = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    const userId = req.user?.userId;
+    const { taskId } = req.params;
+
+    const task = await Task.findOneAndUpdate(
+      { _id: taskId, user: userId },
+      { isDeleted: true, deletedAt: new Date() },
+      { new: true }
+    );
+
+    if (!task) {
+      throw new ApiError(404, "Task not found or unauthorized");
+    }
+
+    res.status(200).json(new ApiResponse(200, null, "Task moved to trash"));
   }
 );
