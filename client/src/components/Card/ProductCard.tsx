@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import { extractErrorMessage } from "@/utils/apiError";
 import { usePermanentlyDeleteTaskOrProjectMutation, useRecoverTaskOrProjectMutation, useSoftDeleteProjectMutation } from "@/redux/features/api/projectApi";
 
+
 interface ProductCardProps {
     projectData?: Project[] | Task[];
     role: string;
@@ -83,8 +84,6 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
             await recoverTaskOrProject(id);
         }
     };
-
-
 
     // task effect
     useEffect(() => {
@@ -155,6 +154,8 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                             <FileText className="inline-block w-5 h-5 text-purple-600 mr-2" />
                                             {project.title}
                                         </CardTitle>
+
+
                                         <div className="flex items-center gap-2">
                                             <Badge
                                                 className={`text-white py-1 px-3 rounded-full capitalize text-xs font-semibold
@@ -304,6 +305,25 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                         {project.description}
                                     </p>
                                 </CardContent>
+
+                                <hr className="border-t border-gray-300 mx-6" />
+
+                                {(
+                                    <div className="px-6 pb-4 text-sm text-gray-700 space-y-1">
+                                        <p>
+                                            <span className="font-medium text-gray-600">📩 Created By:</span>{" "}
+                                            {typeof project.user === "object" && "email" in project.user
+                                                ? project.user.email
+                                                : "Unknown"}
+
+                                        </p>
+                                        {role !== "Project" && <p>
+                                            <span className="font-medium text-gray-600">📁 Associated Project:</span>{" "}
+                                            {project?.project?.title || "N/A"}
+                                        </p>}
+                                    </div>
+                                )}
+
                             </Card>
                         );
                     })}

@@ -67,13 +67,14 @@ export const getAllUserTasks = asyncHandler(
     if (status) {
       filter.status = status || "";
     }
-    
 
     // Get total count for pagination
     const totalResults = await Task.countDocuments(filter);
     const totalPages = Math.ceil(totalResults / limit);
 
     const tasks = await Task.find(filter)
+      .populate("project", "title")
+      .populate("user", "email")
       .sort({ dueDate: 1 })
       .skip(skip)
       .limit(limit)
@@ -188,7 +189,6 @@ export const updateTask = asyncHandler(
       .json(new ApiResponse(200, updatedTask, "Task updated successfully"));
   }
 );
-
 
 /**
  * @desc  Soft Delete Task

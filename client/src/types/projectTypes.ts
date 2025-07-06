@@ -1,12 +1,19 @@
+export interface User {
+  _id: string;
+  email: string;
+  name?: string;
+}
+
 export interface Project {
   _id: string;
   title: string;
   description: string;
   status: "active" | "completed";
-  user: string;
+  user: string | User;
   createdAt: string;
   updatedAt: string;
   results: any;
+  project?: any;
 }
 
 export interface createProject {
@@ -52,6 +59,3 @@ export interface PaginatedProjectResponse {
   currentPage: number;
   totalResults: number;
 }
-
-
-
