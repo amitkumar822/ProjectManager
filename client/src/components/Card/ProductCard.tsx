@@ -74,8 +74,16 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
     const [recoverTaskOrProject, recoverRes] = useRecoverTaskOrProjectMutation()
 
     const handleRecover = async (id: string) => {
-        await recoverTaskOrProject(id);
-    }
+        const confirm = window.confirm(
+            "♻️ Are you sure you want to recover this item?\n\n" +
+            "It will be restored to its original section and removed from the Trash."
+        );
+
+        if (confirm) {
+            await recoverTaskOrProject(id);
+        }
+    };
+
 
 
     // task effect
