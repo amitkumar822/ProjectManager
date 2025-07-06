@@ -24,12 +24,12 @@ cron.schedule("*/60 * * * * *", async () => {
   try {
     const thresholdDate = new Date(Date.now() - 2 * 60 * 60 * 1000); // 2 hours
 
-    const result = await Task.deleteMany({
-      isDeleted: true,
-      deletedAt: { $lte: thresholdDate },
-    });
+    // const result = await Task.deleteMany({
+    //   isDeleted: true,
+    //   deletedAt: { $lte: thresholdDate },
+    // });
 
-    console.log(`🧹 Auto-deleted ${result.deletedCount} tasks from trash.`);
+    // console.log(`🧹 Auto-deleted ${result.deletedCount} tasks from trash.`);
   } catch (err) {
     console.error("❌ Error during auto-delete cron:", err);
   }

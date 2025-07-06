@@ -15,7 +15,7 @@ import { useNavigate } from "react-router";
 import { useSoftDeleteTaskMutation } from "@/redux/features/api/taskApi";
 import { toast } from "react-toastify";
 import { extractErrorMessage } from "@/utils/apiError";
-import { useSoftDeleteProjectMutation } from "@/redux/features/api/projectApi";
+import { usePermanentlyDeleteTaskOrProjectMutation, useRecoverTaskOrProjectMutation, useSoftDeleteProjectMutation } from "@/redux/features/api/projectApi";
 
 interface ProductCardProps {
     projectData?: Project[] | Task[];
@@ -35,45 +35,84 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
         }));
     };
 
-    // Soft Delete
+    // 🟠 Soft Delete Task (Move to Trash)
     const [softDeleteTask, taskRes] = useSoftDeleteTaskMutation();
 
+    // 🟢 Soft Delete Project (Move to Trash)
     const [softDeleteProject, projectRes] = useSoftDeleteProjectMutation()
 
-    const handleDelete = async (id: string) => {
-        const confirm = window.confirm(
-            `🗑️ Are you sure you want to move this ${role.toLowerCase()} to Trash?\n\n` +
-            `This item will remain in Trash for 30 days and will be **automatically deleted permanently** after that.\n\n` +
-            `You can restore it anytime before deletion from the Trash section.`
-        );
+    // 🔴 Permanently Delete (Task or Project)
+    const [permanentlyDeleteTaskOrProject, pernDeleteRes] = usePermanentlyDeleteTaskOrProjectMutation()
 
-        if (confirm) {
-            if (role === "Task") {
-                await softDeleteTask(id);
-            } else if (role === "Project") {
-                await softDeleteProject(id);
+
+    const handleDelete = async (id: string) => {
+        if (role === "Recyle Bin") {
+            const confirm = window.confirm(
+                ` ⚠ Are you sure you want to permanently delete this ${role.toLowerCase()}?\nThis action cannot be undone.`
+            );
+            if (confirm) {
+                await permanentlyDeleteTaskOrProject(id);
+            }
+        } else {
+            const confirm = window.confirm(
+                `🗑️ Are you sure you want to move this ${role.toLowerCase()} to Trash?\n\n` +
+                `This item will remain in Trash for 30 days and will be **automatically deleted permanently** after that.\n\n` +
+                `You can restore it anytime before deletion from the Trash section.`
+            );
+
+            if (confirm) {
+                if (role === "Task") {
+                    await softDeleteTask(id);
+                } else if (role === "Project") {
+                    await softDeleteProject(id);
+                }
             }
         }
     };
 
+    // 🟩 Recover (Task or Project)
+    const [recoverTaskOrProject, recoverRes] = useRecoverTaskOrProjectMutation()
+
+    const handleRecover = async (id: string) => {
+        await recoverTaskOrProject(id);
+    }
+
 
     // task effect
     useEffect(() => {
+        // 🟠 Task moved to Trash
         if (taskRes.isSuccess) {
-            toast.success("Task delete successful");
+            toast.success("Task moved to Trash successfully.");
         } else if (taskRes.error) {
-            toast.error(extractErrorMessage(taskRes.error) || "Faield to delete task");
+            toast.error(extractErrorMessage(taskRes.error) || "Failed to move Task to Trash.");
         }
-    }, [taskRes.isSuccess, taskRes.error]);
 
-    // project effect
-    useEffect(() => {
+        // 🟢 Project moved to Trash
         if (projectRes.isSuccess) {
-            toast.success("Task delete successful");
+            toast.success("Project moved to Trash successfully.");
         } else if (projectRes.error) {
-            toast.error(extractErrorMessage(projectRes.error) || "Faield to delete task");
+            toast.error(extractErrorMessage(projectRes.error) || "Failed to move Project to Trash.");
         }
-    }, [projectRes.isSuccess, projectRes.error]);
+
+        // 🔴 Permanently Deleted
+        if (pernDeleteRes.isSuccess) {
+            toast.success("Item permanently deleted.");
+        } else if (pernDeleteRes.error) {
+            toast.error(extractErrorMessage(pernDeleteRes.error) || "Failed to permanently delete item.");
+        }
+
+        // 🟩 Recovered from Trash
+        if (recoverRes.isSuccess) {
+            toast.success("Item successfully recovered from Trash.");
+        } else if (recoverRes.error) {
+            toast.error(extractErrorMessage(recoverRes.error) || "Failed to recover item.");
+        }
+    }, [
+        taskRes.isSuccess, taskRes.error,
+        projectRes.isSuccess, projectRes.error,
+        pernDeleteRes.isSuccess, pernDeleteRes.error,
+        recoverRes.isSuccess, recoverRes.error
+    ]);
 
 
     return (
@@ -224,6 +263,24 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                                     </TooltipContent>
                                                 </Tooltip>
                                             </TooltipProvider>
+
+                                            {role === "Recyle Bin" && <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={() => handleRecover(project._id)}
+                                                            className="text-green-600 hover:bg-green-100 bg-green-400/10 cursor-pointer"
+                                                        >
+                                                            <ArchiveRestore className="w-5 h-5" />
+                                                        </Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>
+                                                        <p>Recover</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>}
 
                                         </div>
                                     </div>

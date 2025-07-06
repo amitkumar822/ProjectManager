@@ -189,36 +189,6 @@ export const updateTask = asyncHandler(
   }
 );
 
-/**
- * @desc  Delete User Task
- * @route "PUT" /delete-task/:taskId
- * @access Private
- */
-export const deleteTask = asyncHandler(
-  async (req: Request, res: Response): Promise<void> => {
-    const userId = req.user?.userId;
-    const { taskId } = req.params;
-
-    if (!userId || !taskId) {
-      throw new ApiError(400, "User ID or Task ID missing");
-    }
-
-    const filter: FilterQuery<ITask> = {
-      _id: taskId,
-      user: userId,
-    };
-
-    const deletedTask = await Task.findOneAndDelete(filter);
-
-    if (!deletedTask) {
-      throw new ApiError(404, "Task not found or unauthorized");
-    }
-
-    res
-      .status(200)
-      .json(new ApiResponse(200, null, "Task deleted successfully"));
-  }
-);
 
 /**
  * @desc  Soft Delete Task

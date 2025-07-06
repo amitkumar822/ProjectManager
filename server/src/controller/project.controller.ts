@@ -122,35 +122,6 @@ export const updateProject = asyncHandler(
 );
 
 /**
- * @desc  Delete project
- * @route "DELETE" /delete-project/:projectId
- * @access Private
- */
-export const deleteProject = asyncHandler(
-  async (req: Request, res: Response): Promise<void> => {
-    const { projectId } = req.params;
-    const userId = req.user?.userId;
-
-    if (!mongoose.Types.ObjectId.isValid(projectId)) {
-      throw new ApiError(400, "Invalid project ID format");
-    }
-
-    const deletedProject = await Project.findOneAndDelete({
-      _id: projectId,
-      user: userId,
-    });
-
-    if (!deletedProject) {
-      throw new ApiError(404, "Project not found or access denied");
-    }
-
-    res
-      .status(200)
-      .json(new ApiResponse(200, null, "Project deleted successfully"));
-  }
-);
-
-/**
  * @desc  Soft Delete Project
  * @route "PUT" /soft-delete-project/:projectId
  * @access Private
@@ -278,5 +249,83 @@ export const getTrashDeleteTaskProject = asyncHandler(
     res
       .status(200)
       .json(new ApiResponse(200, combined, "Combined search result fetched"));
+  }
+);
+
+/**
+ * @desc  Recover Task and Project
+ * @route "POST" /recover-task-or-project/:id
+ * @access Private
+ */
+export const recoverTaskOrProject = asyncHandler(
+  async (req: Request, res: Response): Promise<Response> => {
+    const userId = req.user?.userId;
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new ApiError(400, "Invalid ID format");
+    }
+
+    const [recoveredTask, recoveredProject] = await Promise.all([
+      Task.findOneAndUpdate(
+        { _id: id, user: userId, isDeleted: true },
+        { isDeleted: false, deletedAt: null },
+        { new: true }
+      ),
+      Project.findOneAndUpdate(
+        { _id: id, user: userId, isDeleted: true },
+        { isDeleted: false, deletedAt: null },
+        { new: true }
+      ),
+    ]);
+
+    if (recoveredTask) {
+      return res
+        .status(200)
+        .json(new ApiResponse(200, null, "Task successfully recovered"));
+    }
+
+    if (recoveredProject) {
+      return res
+        .status(200)
+        .json(new ApiResponse(200, null, "Project successfully recovered"));
+    }
+
+    throw new ApiError(404, "Task or Project not found in Trash");
+  }
+);
+
+/**
+ * @desc  Permanently Delete Task and Project
+ * @route "POST" /permanently-delete-task-or-project/:id
+ * @access Private
+ */
+export const permanentlyDeleteTaskOrProject = asyncHandler(
+  async (req: Request, res: Response): Promise<Response> => {
+    const userId = req.user?.userId;
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new ApiError(400, "Invalid ID format");
+    }
+
+    const [deletedTask, deletedProject] = await Promise.all([
+      Task.findOneAndDelete({ _id: id, user: userId, isDeleted: true }),
+      Project.findOneAndDelete({ _id: id, user: userId, isDeleted: true }),
+    ]);
+
+    if (deletedTask) {
+      return res
+        .status(200)
+        .json(new ApiResponse(200, null, "Task permanently deleted"));
+    }
+
+    if (deletedProject) {
+      return res
+        .status(200)
+        .json(new ApiResponse(200, null, "Project permanently deleted"));
+    }
+
+    throw new ApiError(404, "Task or Project not found or not in Trash");
   }
 );

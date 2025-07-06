@@ -78,6 +78,16 @@ const SearchPage = () => {
         {isError && (
           <p className="text-center text-gray-500">No results found.</p>
         )}
+
+        {!debouncedSearchTerm.trim() && !isLoading && (
+          <div className="text-center mt-10 space-y-2">
+            <p className="text-xl text-purple-700 font-semibold">Start Searching</p>
+            <p className="text-gray-500 text-sm">
+              Enter keywords to find your tasks or projects. Results will appear here.
+            </p>
+          </div>
+        )}
+
       </div>
     </div>
   );
