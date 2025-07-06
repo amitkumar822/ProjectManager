@@ -171,17 +171,17 @@ const ProductCard: FC<ProductCardProps> = ({ projectData, role }) => {
                                 className="bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 shadow-xl rounded-2xl border border-purple-200"
                             >
                                 <CardHeader>
-                                    <div className="flex items-start justify-between gap-2">
+                                    <div className="flex relative items-start justify-between gap-2">
                                         <CardTitle
                                             onClick={() => toggleCard(project._id)}
-                                            className={`cursor-pointer text-lg font-bold text-gray-800 ${isExpanded ? "" : "line-clamp-1"
+                                            className={`cursor-pointer mt-15 md:mt-3 md:text-lg md:font-bold font-semibold text-gray-800 ${isExpanded ? "" : "line-clamp-1"
                                                 }`}
                                         >
                                             <FileText className="inline-block w-5 h-5 text-purple-600 mr-2" />
                                             {project.title}
                                         </CardTitle>
 
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex absolute md:static items-center gap-2 right-0">
                                             <Badge
                                                 className={`text-white py-1 px-3 rounded-full capitalize text-xs font-semibold
                                                     ${project.status ===
